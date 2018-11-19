@@ -24,4 +24,11 @@ public class Main2Activity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
     }
+    public void register_user(View view)
+    {
+        finish();
+    }
+    public void back_to_login(View view) {
+        finish();
+    }
 }
