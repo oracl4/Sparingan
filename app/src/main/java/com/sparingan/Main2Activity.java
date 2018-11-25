@@ -8,7 +8,6 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -19,7 +18,7 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class Main2Activity extends AppCompatActivity {
  private EditText inputEmail,inputPassword;
- private Button btnSignUp;
+ private Button btnSignUp,btnBack;
  private FirebaseAuth auth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,9 +26,16 @@ public class Main2Activity extends AppCompatActivity {
         setContentView(R.layout.activity_main2);
         auth =  FirebaseAuth.getInstance();
         btnSignUp = (Button) findViewById(R.id.register_button);
-        inputEmail = (EditText) findViewById(R.id.email_login);
+        inputEmail = (EditText) findViewById(R.id.email_forgot_et);
         inputPassword = (EditText) findViewById(R.id.password_register);
-        //Mengatur behaviour dari Register button (BtnSignUp)
+        btnBack = (Button) findViewById(R.id.back_to_login);
+        //Mengatur behaviour dari Register button (BtnSignUp) dan Already have login button
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
         btnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -72,7 +78,5 @@ public class Main2Activity extends AppCompatActivity {
             }
         });
     }
-    public void back_to_login(View view) {
-        finish();
-    }
+
 }

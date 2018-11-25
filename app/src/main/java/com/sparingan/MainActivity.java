@@ -4,12 +4,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -21,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
 
     private EditText inputEmail,inputPassword;
     private FirebaseAuth auth;
-    private Button btnLogin,btnSignUp;
+    private Button btnLogin,btnSignUp,btnForgot;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -35,14 +33,23 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         btnLogin = (Button) findViewById(R.id.login_button);
         btnSignUp = (Button) findViewById(R.id.go_to_reg_button);
-        inputEmail = (EditText) findViewById(R.id.email_login);
+        inputEmail = (EditText) findViewById(R.id.email_forgot_et);
         inputPassword = (EditText) findViewById(R.id.password_login);
+        btnForgot = (Button) findViewById(R.id.go_to_forgot);
         auth = FirebaseAuth.getInstance();
         btnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MainActivity.this, Main2Activity.class));
             }
+        });
+
+        btnForgot.setOnClickListener(new View.OnClickListener(){
+            @Override
+                    public void onClick(View v){
+                startActivity(new Intent(MainActivity.this,ForgotPassword.class));
+            }
+
         });
 
         btnLogin.setOnClickListener(new View.OnClickListener() {
