@@ -69,7 +69,6 @@ public class MainActivity extends AppCompatActivity {
                 }
 
 
-
                 //authenticate user
                 auth.signInWithEmailAndPassword(email, password)
                         .addOnCompleteListener(MainActivity.this, new OnCompleteListener<AuthResult>() {
