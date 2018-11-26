@@ -16,6 +16,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
 
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -23,10 +24,12 @@ public class MainMenu extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 private FirebaseAuth auth;
 private FirebaseAuth.AuthStateListener authListener;
+private Button findButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
+        findButton = (Button) findViewById(R.id.findpartner);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         auth = FirebaseAuth.getInstance();
@@ -42,6 +45,15 @@ private FirebaseAuth.AuthStateListener authListener;
                     finish();
                 }}};
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+
+        findButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                startActivity(new Intent(MainMenu.this, CreateSchedule.class));
+            }
+
+        });
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
