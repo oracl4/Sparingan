@@ -15,7 +15,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
-public class MainActivity extends AppCompatActivity {
+public class LoginScreen extends AppCompatActivity {
 
     private EditText inputEmail,inputPassword;
     private FirebaseAuth auth;
@@ -26,11 +26,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         auth = FirebaseAuth.getInstance();
 
-       /* if (auth.getCurrentUser() != null) {
-            startActivity(new Intent(MainActivity.this, MainMenu.class));
+       if (auth.getCurrentUser() != null) {
+            startActivity(new Intent(LoginScreen.this, MainMenu.class));
             finish();
-        } Kalau User sudah Login sebelumnya, langsung ke main menu */
-        setContentView(R.layout.activity_main);
+        } /*Kalau User sudah Login sebelumnya, langsung ke main menu */
+        setContentView(R.layout.activity_login);
         btnLogin = (Button) findViewById(R.id.login_button);
         btnSignUp = (Button) findViewById(R.id.go_to_reg_button);
         inputEmail = (EditText) findViewById(R.id.email_forgot_et);
@@ -40,14 +40,14 @@ public class MainActivity extends AppCompatActivity {
         btnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, Main2Activity.class));
+                startActivity(new Intent(LoginScreen.this, RegisterScreen.class));
             }
         });
 
         btnForgot.setOnClickListener(new View.OnClickListener(){
             @Override
                     public void onClick(View v){
-                startActivity(new Intent(MainActivity.this,ForgotPassword.class));
+                startActivity(new Intent(LoginScreen.this,ForgotPassword.class));
             }
 
         });
@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
 
                 //authenticate user
                 auth.signInWithEmailAndPassword(email, password)
-                        .addOnCompleteListener(MainActivity.this, new OnCompleteListener<AuthResult>() {
+                        .addOnCompleteListener(LoginScreen.this, new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 // If sign in fails, display a message to the user. If sign in succeeds
@@ -83,10 +83,10 @@ public class MainActivity extends AppCompatActivity {
                                     if (password.length() < 6) {
                                         inputPassword.setError(getString(R.string.minimum_password));
                                     } else {
-                                        Toast.makeText(MainActivity.this, getString(R.string.auth_failed), Toast.LENGTH_LONG).show();
+                                        Toast.makeText(LoginScreen.this, getString(R.string.auth_failed), Toast.LENGTH_LONG).show();
                                     }
                                 } else {
-                                    Intent intent = new Intent(MainActivity.this, MainMenu.class);
+                                    Intent intent = new Intent(LoginScreen.this, MainMenu.class);
                                     startActivity(intent);
                                     finish();
                                 }
@@ -94,6 +94,6 @@ public class MainActivity extends AppCompatActivity {
                             }
                         });
             }
-        });/* Untuk pindah activity ke Register Screen, this->Main2Activity*/
+        });/* Untuk pindah activity ke Register Screen, this->RegisterScreen*/
 }
     }

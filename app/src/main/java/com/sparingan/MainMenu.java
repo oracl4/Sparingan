@@ -41,7 +41,7 @@ private Button findButton;
                 if (user == null) {
                     // user auth state is changed - user is null
                     // launch login activity
-                    startActivity(new Intent(MainMenu.this, MainActivity.class));
+                    startActivity(new Intent(MainMenu.this, LoginScreen.class));
                     finish();
                 }}};
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
