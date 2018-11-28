@@ -41,8 +41,11 @@ private static final String TAG = MainMenu.class.getSimpleName();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
         findButton = (Button) findViewById(R.id.findpartner);
+        //get Database Instance
         mInstance = FirebaseDatabase.getInstance();
+        //get database reference from Users node
         mRef = mInstance.getReference("Users");
+        //Text view to edit
         welcome = (TextView)findViewById(R.id.usernameText);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -67,7 +70,7 @@ private static final String TAG = MainMenu.class.getSimpleName();
             }
 
         });
-        //Show welcome text pada main Menu
+        //Show Welcome text in main menu
         mRef.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
                                                      @Override
                                                      public void onDataChange(DataSnapshot dataSnapshot) {
@@ -75,7 +78,7 @@ private static final String TAG = MainMenu.class.getSimpleName();
 
 
                                                          // Display newly updated name and email
-                                                         welcome.setText("Welcome ," + user.username+ "!");
+                                                         welcome.setText("Welcome , " + user.username+ " ! ");
                                                      }
             @Override
             public void onCancelled(DatabaseError error) {
