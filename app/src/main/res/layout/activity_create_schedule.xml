@@ -7,6 +7,41 @@
     android:background="@drawable/find2"
     tools:context=".CreateSchedule">
 
+    <Button
+        android:id="@+id/btnFind"
+        style="@android:style/Widget.DeviceDefault.Button.Borderless"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="1dp"
+        android:layout_marginBottom="8dp"
+        android:text="@string/find"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.435"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.737" />
+
+    <Spinner
+        android:id="@+id/lokasi"
+        android:layout_width="fill_parent"
+        android:layout_height="43dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
+        android:prompt="@string/email"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.645" />
+
     <TextView
         android:id="@+id/textView8"
         android:layout_width="wrap_content"
@@ -68,7 +103,7 @@
         app:layout_constraintVertical_bias="0.049" />
 
     <Spinner
-        android:id="@+id/spinner"
+        android:id="@+id/sport"
         android:layout_width="fill_parent"
         android:layout_height="43dp"
         android:layout_marginStart="8dp"

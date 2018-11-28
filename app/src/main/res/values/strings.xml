@@ -48,6 +48,8 @@
     <string name="location">Choose Location</string>
     <string name="time">Choose time</string>
     <string name="regist_success">Registration is Sucessfull!</string>
+    <string name="find_success">Your Schedule is Sucessfully created!</string>
+    <string name="find_fail">Your Schedule Is Failed to be created! Please try again!</string>
     <string-array name="dateArray">
         <item>01</item>
         <item>02</item>
@@ -95,7 +97,14 @@
         <item>Desember</item>
     </string-array>
     <string-array name="kota">
-        <item>DKI Jakarta</item>
+        <item>Jakarta Selatan</item>
+        <item>Jakarta Timur</item>
+        <item>Jakarta Utara</item>
+        <item>Jakarta Pusat</item>
+        <item>Jakarta Barat</item>
+        <item>Depok I</item>
+        <item>Depok II</item>
+        <item>Sekitar UI / Kelapa Dua</item>
     </string-array>
     <string-array name="yearArray">
         <item>2018</item>

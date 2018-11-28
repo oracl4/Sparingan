@@ -21,19 +21,19 @@ public class LoginScreen extends AppCompatActivity {
     private EditText inputEmail,inputPassword;
     private FirebaseAuth auth;
     private Button btnLogin,btnSignUp,btnForgot;
-    private ProgressBar progressBar;
+    private ProgressBar loading;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         auth = FirebaseAuth.getInstance();
-        progressBar = (ProgressBar)findViewById(R.id.loading1);
-        progressBar.setVisibility(View.GONE);
        if (auth.getCurrentUser() != null) {
             startActivity(new Intent(LoginScreen.this, MainMenu.class));
             finish();
         } /*Kalau User sudah Login sebelumnya, langsung ke main menu */
         setContentView(R.layout.activity_login);
+        loading = (ProgressBar) findViewById(R.id.loading1);
+        loading.setVisibility(View.GONE);
         btnLogin = (Button) findViewById(R.id.login_button);
         btnSignUp = (Button) findViewById(R.id.go_to_reg_button);
         inputEmail = (EditText) findViewById(R.id.email_forgot_et);
@@ -71,7 +71,7 @@ public class LoginScreen extends AppCompatActivity {
                     return;
                 }
 
-                progressBar.setVisibility(View.VISIBLE);
+                loading.setVisibility(View.VISIBLE);
                 //authenticate user
                 auth.signInWithEmailAndPassword(email, password)
                         .addOnCompleteListener(LoginScreen.this, new OnCompleteListener<AuthResult>() {
@@ -89,7 +89,7 @@ public class LoginScreen extends AppCompatActivity {
                                         Toast.makeText(LoginScreen.this, getString(R.string.auth_failed), Toast.LENGTH_LONG).show();
                                     }
                                 } else {
-                                    progressBar.setVisibility(View.GONE);
+                                    loading.setVisibility(View.GONE);
                                     Intent intent = new Intent(LoginScreen.this, MainMenu.class);
                                     startActivity(intent);
                                     finish();

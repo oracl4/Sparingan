@@ -13,8 +13,8 @@
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="318dp"
-        android:layout_height="140dp"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
         android:contentDescription="@string/nav_header_desc"
         android:padding="8dp"
         android:paddingLeft="8dp"

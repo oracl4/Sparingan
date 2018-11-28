@@ -32,7 +32,6 @@ public class RegisterScreen extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-
         progressBar = (ProgressBar)findViewById(R.id.loading2);
         progressBar.setVisibility(View.GONE);
         auth =  FirebaseAuth.getInstance();

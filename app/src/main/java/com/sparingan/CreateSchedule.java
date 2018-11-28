@@ -1,38 +1,49 @@
 package com.sparingan;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Calendar;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.text.InputType;
 import android.view.View;
+import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
 import android.widget.Spinner;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemSelectedListener;
 
 public class CreateSchedule extends Activity implements OnItemSelectedListener{
-    private Button btnBack;
+    private Button btnBack,btnFi;
     private EditText date;
     private DatePickerDialog picker;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_schedule);
-        btnBack=(Button)findViewById(R.id.btnBk);
-        date = (EditText)findViewById(R.id.date);
+        btnBack = (Button) findViewById(R.id.btnBk);
+        btnFi = (Button) findViewById(R.id.btnFind);
+
+        date = (EditText) findViewById(R.id.date);
         date.setInputType(InputType.TYPE_NULL);
-        btnBack.setOnClickListener(new View.OnClickListener(){
+        btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v){
+            public void onClick(View v) {
                 finish();
             }
         });
@@ -55,12 +66,11 @@ public class CreateSchedule extends Activity implements OnItemSelectedListener{
             }
         });
 
-
         // Spinner element
-        Spinner spinner = (Spinner) findViewById(R.id.spinner);
-
+        final Spinner sport = (Spinner) findViewById(R.id.sport);
+        final Spinner lokasi = (Spinner) findViewById(R.id.lokasi);
         // Spinner click listener
-        spinner.setOnItemSelectedListener(this);
+        sport.setOnItemSelectedListener(this);
 
         // Spinner Drop down elements
         List<String> sport_categories = new ArrayList<String>();
@@ -69,18 +79,86 @@ public class CreateSchedule extends Activity implements OnItemSelectedListener{
         sport_categories.add("Soccer");
         sport_categories.add("Badminton");
         sport_categories.add("Atlhetics");
-
+        List<String> location = new ArrayList<String>();
+        location.add("Jakarta Barat");
+        location.add("Jakarta Utara");
+        location.add("Jakarta Timur");
+        location.add("Jakarta Selatan");
+        location.add("Jakarta Pusat");
+        location.add("Depok I");
+        location.add("Depok II");
+        location.add("Sekitar UI");
         // Creating adapter for spinner
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, sport_categories);
-
+        ArrayAdapter<String> adapterSport = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, sport_categories);
+        ArrayAdapter<String> adapterLocation = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, location);
         // Drop down layout style - list view with radio button
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        adapterSport.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        adapterLocation.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         // attaching data adapter to spinner
-        spinner.setAdapter(dataAdapter);
-    }
+        sport.setAdapter(adapterSport);
+        lokasi.setAdapter(adapterLocation);
 
-    @Override
+        final String[] sportString = new String[1];
+        final String[] lokasiString = new String[1];
+        sport.setOnItemSelectedListener(new OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> parent,
+                                       View view, int pos, long id) {
+                sportString[0] = parent.getItemAtPosition(pos).toString();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> arg0) {
+                // TODO Auto-generated method stub
+
+            }
+        });
+        lokasi.setOnItemSelectedListener(new OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> parent,
+                                       View view, int pos, long id) {
+                lokasiString[0] = parent.getItemAtPosition(pos).toString();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> arg0) {
+                // TODO Auto-generated method stub
+
+            }
+        });
+
+        btnFi.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String sport = Arrays.toString(sportString);
+                String location = Arrays.toString(lokasiString);
+                String dateString = date.getText().toString();
+                Schedule schedule = new Schedule(sport,location,dateString);
+                FirebaseDatabase.getInstance().getReference("Schedules").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(schedule).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            /*progressBar.setVisibility(View.GONE);*/
+                            Toast.makeText(CreateSchedule.this, getString(R.string.find_success), Toast.LENGTH_LONG).show();
+                            finish();
+                        }
+                        else{
+                            Toast.makeText(CreateSchedule.this,getString(R.string.find_fail),Toast.LENGTH_LONG).show();
+                        }
+                    }
+
+                    ;
+                });
+            }
+
+        });
+
+
+
+   /* @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         // On selecting a spinner item
         String item = parent.getItemAtPosition(position).toString();
@@ -88,7 +166,20 @@ public class CreateSchedule extends Activity implements OnItemSelectedListener{
         // Showing selected spinner item
         Toast.makeText(parent.getContext(), "Selected: " + item, Toast.LENGTH_LONG).show();
     }
+
     public void onNothingSelected(AdapterView<?> arg0) {
         // TODO Auto-generated method stub
+    }*/
+
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
     }
 }
