@@ -33,13 +33,14 @@ public class RegisterScreen extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
+        progressBar = (ProgressBar)findViewById(R.id.loading2);
+        progressBar.setVisibility(View.GONE);
         auth =  FirebaseAuth.getInstance();
         btnSignUp = (Button) findViewById(R.id.register_button);
         inputUsername = (EditText)findViewById(R.id.username_register);
         inputEmail = (EditText) findViewById(R.id.email_forgot_et);
         inputPassword = (EditText) findViewById(R.id.password_register);
         btnBack = (Button) findViewById(R.id.back_to_login);
-
         //Mengatur behaviour dari Register button (BtnSignUp) dan Already have login button
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,7 +73,7 @@ public class RegisterScreen extends AppCompatActivity {
                     return;
                 }
                 //menyimpan username kedalam database (Method createUser)
-
+                progressBar.setVisibility(View.VISIBLE);
                 auth.createUserWithEmailAndPassword(email, password)
                         .addOnCompleteListener(RegisterScreen.this, new OnCompleteListener<AuthResult>() {
                             @Override
@@ -84,6 +85,7 @@ public class RegisterScreen extends AppCompatActivity {
                                    @Override
                                    public void onComplete(@NonNull Task<Void> task) {
                                        if(task.isSuccessful()){
+                                           progressBar.setVisibility(View.GONE);
                                            Toast.makeText(RegisterScreen.this,getString(R.string.regist_success),Toast.LENGTH_LONG).show();
                                        }
                                    }

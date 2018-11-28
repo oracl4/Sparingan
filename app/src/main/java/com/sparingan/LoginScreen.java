@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -20,12 +21,14 @@ public class LoginScreen extends AppCompatActivity {
     private EditText inputEmail,inputPassword;
     private FirebaseAuth auth;
     private Button btnLogin,btnSignUp,btnForgot;
+    private ProgressBar progressBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         auth = FirebaseAuth.getInstance();
-
+        progressBar = (ProgressBar)findViewById(R.id.loading1);
+        progressBar.setVisibility(View.GONE);
        if (auth.getCurrentUser() != null) {
             startActivity(new Intent(LoginScreen.this, MainMenu.class));
             finish();
@@ -68,7 +71,7 @@ public class LoginScreen extends AppCompatActivity {
                     return;
                 }
 
-
+                progressBar.setVisibility(View.VISIBLE);
                 //authenticate user
                 auth.signInWithEmailAndPassword(email, password)
                         .addOnCompleteListener(LoginScreen.this, new OnCompleteListener<AuthResult>() {
@@ -86,6 +89,7 @@ public class LoginScreen extends AppCompatActivity {
                                         Toast.makeText(LoginScreen.this, getString(R.string.auth_failed), Toast.LENGTH_LONG).show();
                                     }
                                 } else {
+                                    progressBar.setVisibility(View.GONE);
                                     Intent intent = new Intent(LoginScreen.this, MainMenu.class);
                                     startActivity(intent);
                                     finish();
