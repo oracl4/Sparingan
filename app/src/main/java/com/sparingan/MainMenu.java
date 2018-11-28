@@ -7,6 +7,7 @@ import com.google.firebase.auth.FirebaseUser;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -17,23 +18,37 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.TextView;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ValueEventListener;
 
 public class MainMenu extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 private FirebaseAuth auth;
 private FirebaseAuth.AuthStateListener authListener;
 private Button findButton;
+private TextView welcome;
+private FirebaseDatabase mInstance;
+private DatabaseReference mRef;
+private static final String TAG = MainMenu.class.getSimpleName();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
         findButton = (Button) findViewById(R.id.findpartner);
+        mInstance = FirebaseDatabase.getInstance();
+        mRef = mInstance.getReference("Users");
+        welcome = (TextView)findViewById(R.id.usernameText);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         auth = FirebaseAuth.getInstance();
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
         authListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -52,8 +67,22 @@ private Button findButton;
             }
 
         });
+        //Show welcome text pada main Menu
+        mRef.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
+                                                     @Override
+                                                     public void onDataChange(DataSnapshot dataSnapshot) {
+                                                         User user = dataSnapshot.getValue(User.class);
 
 
+                                                         // Display newly updated name and email
+                                                         welcome.setText("Welcome ," + user.username+ "!");
+                                                     }
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                Log.w(TAG, "Failed to read value.", error.toException());
+            }
+                                                 });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
