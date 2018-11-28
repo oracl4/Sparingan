@@ -47,6 +47,7 @@
     <string name="dateformat">dd/mm/yyyy</string>
     <string name="location">Choose Location</string>
     <string name="time">Choose time</string>
+    <string name="regist_success">Registration is Sucessfull!</string>
     <string-array name="dateArray">
         <item>01</item>
         <item>02</item>
@@ -95,7 +96,6 @@
     </string-array>
     <string-array name="kota">
         <item>DKI Jakarta</item>
-
     </string-array>
     <string-array name="yearArray">
         <item>2018</item>

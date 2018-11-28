@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -26,17 +27,12 @@ public class RegisterScreen extends AppCompatActivity {
  private EditText inputEmail,inputPassword,inputUsername;
  private Button btnSignUp,btnBack;
  private FirebaseAuth auth;
- private DatabaseReference mFirebaseDatabase;
- private FirebaseDatabase mFirebaseInstance;
- private String userId;
+ private ProgressBar progressBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-        //declare variables
-        mFirebaseInstance = FirebaseDatabase.getInstance();
-        // get reference to 'users' node
-        mFirebaseDatabase = mFirebaseInstance.getReference("username");
+
         auth =  FirebaseAuth.getInstance();
         btnSignUp = (Button) findViewById(R.id.register_button);
         inputUsername = (EditText)findViewById(R.id.username_register);
@@ -54,8 +50,8 @@ public class RegisterScreen extends AppCompatActivity {
         btnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String username = inputUsername.getText().toString();
-                String email = inputEmail.getText().toString().trim();
+                final String username = inputUsername.getText().toString();
+                final String email = inputEmail.getText().toString().trim();
                 String password = inputPassword.getText().toString().trim();
 
 
@@ -76,12 +72,22 @@ public class RegisterScreen extends AppCompatActivity {
                     return;
                 }
                 //menyimpan username kedalam database (Method createUser)
-                createUser(username);
+
                 auth.createUserWithEmailAndPassword(email, password)
                         .addOnCompleteListener(RegisterScreen.this, new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
-                                Toast.makeText(RegisterScreen.this, "User Registered!" + task.isSuccessful(), Toast.LENGTH_SHORT).show();
+
+                                User user = new User(username,email);
+                                // Create new node in Database named "Users"
+                               FirebaseDatabase.getInstance().getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                   @Override
+                                   public void onComplete(@NonNull Task<Void> task) {
+                                       if(task.isSuccessful()){
+                                           Toast.makeText(RegisterScreen.this,getString(R.string.regist_success),Toast.LENGTH_LONG).show();
+                                       }
+                                   }
+                               });
                                 // If sign in fails, display a message to the user. If sign in succeeds
                                 // the auth state listener will be notified and logic to handle the
                                 // signed in user can be handled in the listener.
@@ -89,6 +95,7 @@ public class RegisterScreen extends AppCompatActivity {
                                     Toast.makeText(RegisterScreen.this, "Authentication failed." + task.getException(),
                                             Toast.LENGTH_SHORT).show();
                                 } else {
+
                                     startActivity(new Intent(RegisterScreen.this, LoginScreen.class));
                                     finish();
                                 }
@@ -97,18 +104,6 @@ public class RegisterScreen extends AppCompatActivity {
             }
         });
     }
-    private void createUser(String username) {
-            // TODO
-        // In real apps this userId should be fetched
-        // by implementing firebase auth
-        if (TextUtils.isEmpty(userId)) {
-            userId = mFirebaseDatabase.push().getKey();
-        }
 
-        User user = new User(username);
-
-        mFirebaseDatabase.child(userId).setValue(user);
-
-    }
 
 }
