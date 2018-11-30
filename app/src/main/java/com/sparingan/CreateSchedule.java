@@ -24,6 +24,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
+
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemSelectedListener;
@@ -31,6 +33,7 @@ import android.widget.AdapterView.OnItemSelectedListener;
 public class CreateSchedule extends Activity implements OnItemSelectedListener{
     private Button btnBack,btnFi;
     private EditText date;
+    private ProgressBar progressBar;
     private DatePickerDialog picker;
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -38,7 +41,8 @@ public class CreateSchedule extends Activity implements OnItemSelectedListener{
         setContentView(R.layout.activity_create_schedule);
         btnBack = (Button) findViewById(R.id.btnBk);
         btnFi = (Button) findViewById(R.id.btnFind);
-
+        progressBar = (ProgressBar)findViewById(R.id.progressBarSch);
+        progressBar.setVisibility(View.GONE);
         date = (EditText) findViewById(R.id.date);
         date.setInputType(InputType.TYPE_NULL);
         btnBack.setOnClickListener(new View.OnClickListener() {
@@ -133,6 +137,7 @@ public class CreateSchedule extends Activity implements OnItemSelectedListener{
         btnFi.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                progressBar.setVisibility(View.VISIBLE);
                 String sport = Arrays.toString(sportString);
                 String location = Arrays.toString(lokasiString);
                 String dateString = date.getText().toString();
@@ -141,11 +146,12 @@ public class CreateSchedule extends Activity implements OnItemSelectedListener{
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
-                            /*progressBar.setVisibility(View.GONE);*/
+                            progressBar.setVisibility(View.GONE);
                             Toast.makeText(CreateSchedule.this, getString(R.string.find_success), Toast.LENGTH_LONG).show();
                             finish();
                         }
                         else{
+                            progressBar.setVisibility(View.GONE);
                             Toast.makeText(CreateSchedule.this,getString(R.string.find_fail),Toast.LENGTH_LONG).show();
                         }
                     }

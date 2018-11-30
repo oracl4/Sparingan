@@ -51,6 +51,22 @@ private static final String TAG = MainMenu.class.getSimpleName();
         setSupportActionBar(toolbar);
         auth = FirebaseAuth.getInstance();
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        //Show Welcome text in main menu
+        mRef.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                User user = dataSnapshot.getValue(User.class);
+
+
+                // Display newly updated name and email
+                welcome.setText("Welcome , " + user.username+ " ! ");
+            }
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                Log.w(TAG, "Failed to read value.", error.toException());
+            }
+        });
 
         authListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -70,22 +86,7 @@ private static final String TAG = MainMenu.class.getSimpleName();
             }
 
         });
-        //Show Welcome text in main menu
-        mRef.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
-                                                     @Override
-                                                     public void onDataChange(DataSnapshot dataSnapshot) {
-                                                         User user = dataSnapshot.getValue(User.class);
 
-
-                                                         // Display newly updated name and email
-                                                         welcome.setText("Welcome , " + user.username+ " ! ");
-                                                     }
-            @Override
-            public void onCancelled(DatabaseError error) {
-                // Failed to read value
-                Log.w(TAG, "Failed to read value.", error.toException());
-            }
-                                                 });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(

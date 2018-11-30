@@ -32,7 +32,8 @@
     <string name="btn_remove">Remove</string>
     <string name="btn_sign_out">Sign Out</string>
     <string name="lbl_forgot_password">Forgot password?</string>
-    <string name="forgot_password_msg">"Don't Worry! We just need your registered e-mail to send you the password reset instructions."</string>
+    <string name="forgot_password_msg">"Don't Worry! We just need your registered e-mail to send
+        you the password reset instructions."</string>
     <string name="title_activity_main_menu">MainMenu</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -47,8 +48,9 @@
     <string name="dateformat">dd/mm/yyyy</string>
     <string name="location">Choose Location</string>
     <string name="time">Choose time</string>
-    <string name="regist_success">Registration is Sucessfull!</string>
-    <string name="find_success">Your Schedule is Sucessfully created!</string>
+    <string name="regist_success">Registration is Successful!</string>
+    <string name="regist_fail">Registration Failed! Please Try Again!</string>
+    <string name="find_success">Your Schedule is Successfully created!</string>
     <string name="find_fail">Your Schedule Is Failed to be created! Please try again!</string>
     <string-array name="dateArray">
         <item>01</item>

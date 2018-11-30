@@ -83,6 +83,7 @@ public class LoginScreen extends AppCompatActivity {
 
                                 if (!task.isSuccessful()) {
                                     // there was an error
+                                    loading.setVisibility(View.GONE);
                                     if (password.length() < 6) {
                                         inputPassword.setError(getString(R.string.minimum_password));
                                     } else {

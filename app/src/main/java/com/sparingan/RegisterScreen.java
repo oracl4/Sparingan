@@ -77,7 +77,7 @@ public class RegisterScreen extends AppCompatActivity {
                         .addOnCompleteListener(RegisterScreen.this, new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
-
+                                if(task.isSuccessful()){
                                 User user = new User(username,email);
                                 // Create new node in Database named "Users"
                                FirebaseDatabase.getInstance().getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -89,12 +89,15 @@ public class RegisterScreen extends AppCompatActivity {
                                        }
                                    }
                                });
+
+                               }
                                 // If sign in fails, display a message to the user. If sign in succeeds
                                 // the auth state listener will be notified and logic to handle the
                                 // signed in user can be handled in the listener.
                                 if (!task.isSuccessful()) {
-                                    Toast.makeText(RegisterScreen.this, "Authentication failed." + task.getException(),
-                                            Toast.LENGTH_SHORT).show();
+                                    progressBar.setVisibility(View.GONE);
+                                    Toast.makeText(RegisterScreen.this, getString(R.string.regist_fail),
+                                            Toast.LENGTH_LONG).show();
                                 } else {
 
                                     startActivity(new Intent(RegisterScreen.this, LoginScreen.class));
