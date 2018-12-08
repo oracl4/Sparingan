@@ -9,7 +9,7 @@ import com.google.firebase.database.IgnoreExtraProperties;
 @IgnoreExtraProperties
 public class User {
 
-    public String username,email;
+    public String username,email,phone;
 
 
     // Default constructor required for calls to
@@ -17,9 +17,10 @@ public class User {
     public User() {
     }
 
-    public User(String username, String email) {
+    public User(String username, String email, String phone) {
         this.username = username;
         this.email = email;
+        this.phone = phone;
     }
 }
 

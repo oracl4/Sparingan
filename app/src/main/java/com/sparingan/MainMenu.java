@@ -19,6 +19,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -32,27 +34,30 @@ public class MainMenu extends AppCompatActivity
 private FirebaseAuth auth;
 private FirebaseAuth.AuthStateListener authListener;
 private Button findButton;
-private TextView welcome;
+private TextView welcome,test;
+private String uid;
 private FirebaseDatabase mInstance;
-private DatabaseReference mRef;
+private DatabaseReference UsersRef;
 private static final String TAG = MainMenu.class.getSimpleName();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
         findButton = (Button) findViewById(R.id.findpartner);
+        test = (TextView)findViewById(R.id.Text);
         //get Database Instance
         mInstance = FirebaseDatabase.getInstance();
         //get database reference from Users node
-        mRef = mInstance.getReference("Users");
+        UsersRef = mInstance.getReference("Users");
         //Text view to edit
+        uid = FirebaseAuth.getInstance().getUid();
         welcome = (TextView)findViewById(R.id.usernameText);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         auth = FirebaseAuth.getInstance();
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         //Show Welcome text in main menu
-        mRef.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
+        UsersRef.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
@@ -67,6 +72,28 @@ private static final String TAG = MainMenu.class.getSimpleName();
                 Log.w(TAG, "Failed to read value.", error.toException());
             }
         });
+//TODO untuk match data masih belum berhasil
+    /*    mInstance.getReference("Schedules").addValueEventListener(new ValueEventListener(){
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Schedule schedule = dataSnapshot.child(uid).getValue(Schedule.class);
+
+
+                    for(DataSnapshot data: dataSnapshot.getChildren()) {
+                        if (dataSnapshot.child(uid).child("date").exists() && dataSnapshot.child(uid).child("date").getChildrenCount()>= 2) {
+                            test.setText("Found Match for " + schedule.date + "," + schedule.sport + ", and " + schedule.location);
+                        } else {
+                            test.setText(schedule.date + schedule.sport + schedule.location);
+                        }
+
+                    }
+
+            }
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                Log.w(TAG, "Failed to read value.", error.toException());
+            }
+        });*/
 
         authListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -161,6 +188,9 @@ private static final String TAG = MainMenu.class.getSimpleName();
     public void onStart() {
         super.onStart();
         auth.addAuthStateListener(authListener);
+
+
+
     }
 
     @Override

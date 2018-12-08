@@ -22,7 +22,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
+            android:background="@android:color/transparent"
             app:popupTheme="@style/PopupOverlay"
             app:title="@string/app_name"
             app:titleTextAppearance="@style/TextAppearance.AppCompat.Body1" />

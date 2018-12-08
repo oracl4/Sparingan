@@ -24,7 +24,7 @@ import com.google.firebase.database.ValueEventListener;
 
 
 public class RegisterScreen extends AppCompatActivity {
- private EditText inputEmail,inputPassword,inputUsername;
+ private EditText inputEmail,inputPassword,inputUsername,inputPhone;
  private Button btnSignUp,btnBack;
  private FirebaseAuth auth;
  private ProgressBar progressBar;
@@ -38,6 +38,7 @@ public class RegisterScreen extends AppCompatActivity {
         btnSignUp = (Button) findViewById(R.id.register_button);
         inputUsername = (EditText)findViewById(R.id.username_register);
         inputEmail = (EditText) findViewById(R.id.email_forgot_et);
+        inputPhone = (EditText)findViewById(R.id.phone_num);
         inputPassword = (EditText) findViewById(R.id.password_register);
         btnBack = (Button) findViewById(R.id.back_to_login);
         //Mengatur behaviour dari Register button (BtnSignUp) dan Already have login button
@@ -52,6 +53,7 @@ public class RegisterScreen extends AppCompatActivity {
             public void onClick(View v) {
                 final String username = inputUsername.getText().toString();
                 final String email = inputEmail.getText().toString().trim();
+                final String phone = inputPhone.getText().toString();
                 String password = inputPassword.getText().toString().trim();
 
 
@@ -78,7 +80,7 @@ public class RegisterScreen extends AppCompatActivity {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if(task.isSuccessful()){
-                                User user = new User(username,email);
+                                User user = new User(username,email,phone);
                                 // Create new node in Database named "Users"
                                FirebaseDatabase.getInstance().getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
                                    @Override
