@@ -74,6 +74,7 @@ public class RegisterScreen extends AppCompatActivity {
                     return;
                 }
                 //menyimpan username kedalam database (Method createUser)
+                //TODO : ADD WHATSAPP AS CONTACT FEATURE USING WHATSAPP API
                 progressBar.setVisibility(View.VISIBLE);
                 auth.createUserWithEmailAndPassword(email, password)
                         .addOnCompleteListener(RegisterScreen.this, new OnCompleteListener<AuthResult>() {
