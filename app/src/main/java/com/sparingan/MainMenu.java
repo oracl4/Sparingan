@@ -3,7 +3,7 @@ package com.sparingan;
 import android.content.Intent;
 import android.os.Bundle;
 import com.google.firebase.auth.FirebaseUser;
-
+import android.view.SurfaceHolder.Callback;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -27,6 +27,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 public class MainMenu extends AppCompatActivity
@@ -61,10 +62,8 @@ private static final String TAG = MainMenu.class.getSimpleName();
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
-
-
                 // Display newly updated name and email
-                welcome.setText("Welcome , " + user.username+ " ! ");
+                welcome.setText("Welcome , " + user.username+  " ! ");
             }
             @Override
             public void onCancelled(DatabaseError error) {
@@ -73,27 +72,21 @@ private static final String TAG = MainMenu.class.getSimpleName();
             }
         });
 //TODO untuk match data masih belum berhasil
-    /*    mInstance.getReference("Schedules").addValueEventListener(new ValueEventListener(){
+
+
+       mInstance.getReference("Schedules").addValueEventListener(new ValueEventListener(){
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                String uid1 = dataSnapshot.getChildren().toString();
                 Schedule schedule = dataSnapshot.child(uid).getValue(Schedule.class);
-
-
-                    for(DataSnapshot data: dataSnapshot.getChildren()) {
-                        if (dataSnapshot.child(uid).child("date").exists() && dataSnapshot.child(uid).child("date").getChildrenCount()>= 2) {
-                            test.setText("Found Match for " + schedule.date + "," + schedule.sport + ", and " + schedule.location);
-                        } else {
-                            test.setText(schedule.date + schedule.sport + schedule.location);
-                        }
-
-                    }
-
+                test.setText(schedule.date + uid1);
             }
+
             public void onCancelled(DatabaseError error) {
                 // Failed to read value
                 Log.w(TAG, "Failed to read value.", error.toException());
             }
-        });*/
+        });
 
         authListener = new FirebaseAuth.AuthStateListener() {
             @Override

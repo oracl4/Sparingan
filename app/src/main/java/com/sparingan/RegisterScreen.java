@@ -32,15 +32,15 @@ public class RegisterScreen extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-        progressBar = (ProgressBar)findViewById(R.id.loading2);
+        progressBar = findViewById(R.id.loading2);
         progressBar.setVisibility(View.GONE);
         auth =  FirebaseAuth.getInstance();
-        btnSignUp = (Button) findViewById(R.id.register_button);
-        inputUsername = (EditText)findViewById(R.id.username_register);
-        inputEmail = (EditText) findViewById(R.id.email_forgot_et);
-        inputPhone = (EditText)findViewById(R.id.phone_num);
-        inputPassword = (EditText) findViewById(R.id.password_register);
-        btnBack = (Button) findViewById(R.id.back_to_login);
+        btnSignUp = findViewById(R.id.register_button);
+        inputUsername = findViewById(R.id.username_register);
+        inputEmail = findViewById(R.id.email_forgot_et);
+        inputPhone = findViewById(R.id.phone_num);
+        inputPassword = findViewById(R.id.password_register);
+        btnBack = findViewById(R.id.back_to_login);
         //Mengatur behaviour dari Register button (BtnSignUp) dan Already have login button
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,7 +55,7 @@ public class RegisterScreen extends AppCompatActivity {
                 final String email = inputEmail.getText().toString().trim();
                 final String phone = inputPhone.getText().toString();
                 String password = inputPassword.getText().toString().trim();
-
+                final String whatsapp = getString(R.string.linkwa)+phone+"&text=Yuk%20Sparring";
 
                 if (TextUtils.isEmpty(email)) {
                     Toast.makeText(getApplicationContext(), "Enter email address!", Toast.LENGTH_SHORT).show();
@@ -81,7 +81,7 @@ public class RegisterScreen extends AppCompatActivity {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if(task.isSuccessful()){
-                                User user = new User(username,email,phone);
+                                User user = new User(username,email,phone,whatsapp);
                                 // Create new node in Database named "Users"
                                FirebaseDatabase.getInstance().getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
                                    @Override

@@ -3,6 +3,7 @@
     <string name="login">LOGIN</string>
     <string name="uname">Username</string>
     <string name="pass">Password</string>
+    <string name="linkwa">https://api.whatsapp.com/send?phone=</string>
     <string name="find_partner">Find Partner Now</string>
     <string name="my_schedule">My Schedule</string>
     <string name="action_sign_in_short">Register</string>
@@ -31,7 +32,7 @@
     <string name="btn_send">Send</string>
     <string name="btn_remove">Remove</string>
     <string name="btn_sign_out">Sign Out</string>
-    <string name="phone_num">Phone Number</string>
+    <string name="phone_num">Phone (+62)</string>
     <string name="lbl_forgot_password">Forgot password?</string>
     <string name="forgot_password_msg">"Don't Worry! We just need your registered e-mail to send
         you the password reset instructions."</string>
