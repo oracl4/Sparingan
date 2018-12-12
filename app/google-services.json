@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "549694921469",
+    "firebase_url": "https://sparingan-787b3.firebaseio.com",
+    "project_id": "sparingan-787b3",
+    "storage_bucket": "sparingan-787b3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:549694921469:android:0c0e9f0c38678f20",
+        "android_client_info": {
+          "package_name": "com.sparingan"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "549694921469-967crgkanqsovq978fqsa64cdlmkik1i.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sparingan",
+            "certificate_hash": "d6d92cafc2a2fcd62ebf22a31e5f581e5048b43c"
+          }
+        },
+        {
+          "client_id": "549694921469-89v9re4enbgnjhrmqm665qodlut612ln.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBqgy5t8tlb_HjqW86E75fkoxf0AQnKU4k"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "549694921469-89v9re4enbgnjhrmqm665qodlut612ln.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
