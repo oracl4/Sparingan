@@ -3,10 +3,8 @@ package com.sparingan;
 import android.content.Intent;
 import android.os.Bundle;
 import com.google.firebase.auth.FirebaseUser;
-import android.view.SurfaceHolder.Callback;
+
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -27,8 +25,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Map;
 
 public class MainMenu extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -39,6 +40,10 @@ private TextView welcome,test;
 private String uid;
 private FirebaseDatabase mInstance;
 private DatabaseReference UsersRef;
+private String userDate,userLocation,userSport;
+private ArrayList<String> allLocation = new ArrayList<>();
+private ArrayList<String> allDate = new ArrayList<>();
+private ArrayList<String> allSport = new ArrayList<>();
 private static final String TAG = MainMenu.class.getSimpleName();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,17 +58,31 @@ private static final String TAG = MainMenu.class.getSimpleName();
         //Text view to edit
         uid = FirebaseAuth.getInstance().getUid();
         welcome = (TextView)findViewById(R.id.usernameText);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         auth = FirebaseAuth.getInstance();
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         //Show Welcome text in main menu
-        UsersRef.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
+        UsersRef.child(uid).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
-                // Display newly updated name and email
+
                 welcome.setText("Welcome , " + user.username+  " ! ");
+            }
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                Log.w(TAG, "Failed to read value.", error.toException());
+            }
+        });
+        mInstance.getReference("Schedules").child(uid).addValueEventListener(new ValueEventListener() { //collect logged in user's allDate,allLocation, and allSport
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Schedule schedule = dataSnapshot.getValue(Schedule.class);
+                userDate = schedule.date;
+                userLocation = schedule.location;
+                userSport = schedule.sport;
             }
             @Override
             public void onCancelled(DatabaseError error) {
@@ -74,19 +93,55 @@ private static final String TAG = MainMenu.class.getSimpleName();
 //TODO untuk match data masih belum berhasil
 
 
-       mInstance.getReference("Schedules").addValueEventListener(new ValueEventListener(){
+        mInstance.getReference().child("Schedules")
+                .addValueEventListener(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        //Get map of users in datasnapshot
+                        collectDate((Map<String, Object>) dataSnapshot.getValue());
+                        collectLocation((Map<String, Object>) dataSnapshot.getValue());
+                        collectSport((Map<String, Object>) dataSnapshot.getValue());
+                        //DELETE LOGGED IN USER'S DATAS IN THE ARRAY
+                        allDate.remove(userDate);
+                        allLocation.remove(userLocation);
+                        allSport.remove(userSport);
+
+                        test.setText(userSport);
+
+                        //COMPARE USER'S SCHEDULE VALUES TO ALL EXISTING SCHEDULE
+                        for(int i=0;i<allDate.size();i++){
+                            if(userDate.equals(allDate.get(i)) && userSport.equals(allSport.get(i)) && userLocation.equals(allLocation.get(i))){
+                               test.setText("MATCH FOUND!");
+                               break;
+                            }
+
+                            test.setText(Arrays.toString(allSport.toArray()));
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.w(TAG, "Failed to read value.");
+                    }
+                });
+
+     /*  mInstance.getReference("Schedules").addValueEventListener(new ValueEventListener(){
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                String uid1 = dataSnapshot.getChildren().toString();
+            public void onDataChange(DataSnapshot dataSnapshot,String prevChildKey) {
+                for (DataSnapshot childDataSnapshot : dataSnapshot.getChildren()) {
+
+                    test.setText(childDataSnapshot.getKey());
+                }
                 Schedule schedule = dataSnapshot.child(uid).getValue(Schedule.class);
-                test.setText(schedule.date + uid1);
+
             }
 
             public void onCancelled(DatabaseError error) {
                 // Failed to read value
                 Log.w(TAG, "Failed to read value.", error.toException());
             }
-        });
+        });*/
 
         authListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -193,4 +248,50 @@ private static final String TAG = MainMenu.class.getSimpleName();
             auth.removeAuthStateListener(authListener);
         }
 }
+
+    public void collectDate (Map<String,Object> users) { //COLLECT ALL DATES
+
+
+
+        //iterate through each user, ignoring their UID
+        for (Map.Entry<String, Object> entry : users.entrySet()){
+
+            //Get user map
+            Map singleUser = (Map) entry.getValue();
+            //Get phone field and append to list
+            allDate.add((String) singleUser.get("date"));
+        }
+
+
+    }
+    public void collectSport (Map<String,Object> users) { //COLLECT ALL SPORTS
+
+
+
+        //iterate through each user, ignoring their UID
+        for (Map.Entry<String, Object> entry : users.entrySet()){
+
+            //Get user map
+            Map singleUser = (Map) entry.getValue();
+            //Get phone field and append to list
+            allSport.add((String) singleUser.get("sport"));
+        }
+
+
+    }
+    public void collectLocation (Map<String,Object> users) {
+
+
+
+        //iterate through each user, ignoring their UID
+        for (Map.Entry<String, Object> entry : users.entrySet()){
+
+            //Get user map
+            Map singleUser = (Map) entry.getValue();
+            //Get phone field and append to list
+            allLocation.add((String) singleUser.get("location"));
+        }
+
+
+    }
 }
