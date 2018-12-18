@@ -52,8 +52,11 @@
     <string name="time">Choose time</string>
     <string name="regist_success">Registration is Successful!</string>
     <string name="regist_fail">Registration Failed! Please Try Again!</string>
-    <string name="find_success">Your Schedule is Successfully created!</string>
-    <string name="find_fail">Your Schedule Is Failed to be created! Please try again!</string>
+    <string name="dialog_schedule">Your Schedule is Successfully created!</string>
+    <string name="dialog_schedule_fail">Your Schedule Is Failed to be created! Please try again!</string>
+    <string name="dialog_log_out">Are you sure you want to log out? </string>
+    <string name="dialog_match_found">Match Found!</string>
+    <string name="profile">My Profile</string>
     <string-array name="dateArray">
         <item>01</item>
         <item>02</item>

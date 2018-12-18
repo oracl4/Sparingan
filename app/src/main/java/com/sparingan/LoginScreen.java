@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -70,8 +71,10 @@ public class LoginScreen extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Enter password!", Toast.LENGTH_SHORT).show();
                     return;
                 }
-
+                getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                        WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                 loading.setVisibility(View.VISIBLE);
+
                 //authenticate user
                 auth.signInWithEmailAndPassword(email, password)
                         .addOnCompleteListener(LoginScreen.this, new OnCompleteListener<AuthResult>() {
@@ -83,6 +86,7 @@ public class LoginScreen extends AppCompatActivity {
 
                                 if (!task.isSuccessful()) {
                                     // there was an error
+                                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                                     loading.setVisibility(View.GONE);
                                     if (password.length() < 6) {
                                         inputPassword.setError(getString(R.string.minimum_password));
@@ -90,6 +94,7 @@ public class LoginScreen extends AppCompatActivity {
                                         Toast.makeText(LoginScreen.this, getString(R.string.auth_failed), Toast.LENGTH_LONG).show();
                                     }
                                 } else {
+                                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                                     loading.setVisibility(View.GONE);
                                     Intent intent = new Intent(LoginScreen.this, MainMenu.class);
                                     startActivity(intent);

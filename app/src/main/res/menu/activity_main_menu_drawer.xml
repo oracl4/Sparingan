@@ -5,9 +5,9 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_find"
+            android:id="@+id/nav_profile"
             android:icon="@drawable/username"
-            android:title="@string/find" />
+            android:title="@string/profile" />
         <item
             android:id="@+id/nav_signout"
             android:icon="@android:drawable/ic_lock_power_off"

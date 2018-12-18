@@ -27,7 +27,8 @@
             android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity android:name=".ForgotPassword" />
         <activity android:name=".CreateSchedule" />
-        <activity android:name=".ScheduleSaved"></activity>
+        <activity android:name=".ScheduleSaved" />
+        <activity android:name=".ProfileScreen"></activity>
     </application>
 
 </manifest>

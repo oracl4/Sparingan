@@ -1,24 +1,20 @@
 package com.sparingan;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Calendar;
 import android.app.Activity;
 import android.app.DatePickerDialog;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.InputType;
 import android.view.View;
-import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.ImageButton;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -147,12 +143,12 @@ public class CreateSchedule extends Activity implements OnItemSelectedListener{
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
                             progressBar.setVisibility(View.GONE);
-                            Toast.makeText(CreateSchedule.this, getString(R.string.find_success), Toast.LENGTH_LONG).show();
+                            Toast.makeText(CreateSchedule.this, getString(R.string.dialog_schedule), Toast.LENGTH_LONG).show();
                             finish();
                         }
                         else{
                             progressBar.setVisibility(View.GONE);
-                            Toast.makeText(CreateSchedule.this,getString(R.string.find_fail),Toast.LENGTH_LONG).show();
+                            Toast.makeText(CreateSchedule.this,getString(R.string.dialog_schedule_fail),Toast.LENGTH_LONG).show();
                         }
                     }
 

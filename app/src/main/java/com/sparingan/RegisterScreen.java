@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -75,7 +76,10 @@ public class RegisterScreen extends AppCompatActivity {
                 }
                 //menyimpan username kedalam database (Method createUser)
                 //TODO : ADD WHATSAPP AS CONTACT FEATURE USING WHATSAPP API
+                getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                        WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE); //agar tidak ada interaksi saat loading
                 progressBar.setVisibility(View.VISIBLE);
+
                 auth.createUserWithEmailAndPassword(email, password)
                         .addOnCompleteListener(RegisterScreen.this, new OnCompleteListener<AuthResult>() {
                             @Override
@@ -87,8 +91,9 @@ public class RegisterScreen extends AppCompatActivity {
                                    @Override
                                    public void onComplete(@NonNull Task<Void> task) {
                                        if(task.isSuccessful()){
+                                           getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                                            progressBar.setVisibility(View.GONE);
-                                           Toast.makeText(RegisterScreen.this,getString(R.string.regist_success),Toast.LENGTH_LONG).show();
+                                           Toast.makeText(RegisterScreen.this,getString(R.string.regist_success),Toast.LENGTH_LONG).show(); //TODO: Ganti ke dialog box
                                        }
                                    }
                                });
@@ -98,6 +103,7 @@ public class RegisterScreen extends AppCompatActivity {
                                 // the auth state listener will be notified and logic to handle the
                                 // signed in user can be handled in the listener.
                                 if (!task.isSuccessful()) {
+                                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                                     progressBar.setVisibility(View.GONE);
                                     Toast.makeText(RegisterScreen.this, getString(R.string.regist_fail),
                                             Toast.LENGTH_LONG).show();

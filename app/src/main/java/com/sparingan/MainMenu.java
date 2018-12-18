@@ -17,7 +17,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -33,18 +32,20 @@ import java.util.Map;
 
 public class MainMenu extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-private FirebaseAuth auth;
-private FirebaseAuth.AuthStateListener authListener;
-private Button findButton;
-private TextView welcome,test;
-private String uid;
-private FirebaseDatabase mInstance;
-private DatabaseReference UsersRef;
-private String userDate,userLocation,userSport;
-private ArrayList<String> allLocation = new ArrayList<>();
-private ArrayList<String> allDate = new ArrayList<>();
-private ArrayList<String> allSport = new ArrayList<>();
-private static final String TAG = MainMenu.class.getSimpleName();
+    int i=0;
+    private FirebaseAuth auth;
+    private FirebaseAuth.AuthStateListener authListener;
+    private Button findButton;
+    private TextView welcome,test;
+    private String uid;
+    private FirebaseDatabase mInstance;
+    private DatabaseReference UsersRef;
+    private String userDate,userLocation,userSport,userUsername;
+    private ArrayList<String> allLocation = new ArrayList<>();
+    private ArrayList<String> allDate = new ArrayList<>();
+    private ArrayList<String> allSport = new ArrayList<>();
+    private ArrayList<String> allUsername = new ArrayList<>();
+    private static final String TAG = MainMenu.class.getSimpleName();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,55 +77,93 @@ private static final String TAG = MainMenu.class.getSimpleName();
                 Log.w(TAG, "Failed to read value.", error.toException());
             }
         });
-        mInstance.getReference("Schedules").child(uid).addValueEventListener(new ValueEventListener() { //collect logged in user's allDate,allLocation, and allSport
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Schedule schedule = dataSnapshot.getValue(Schedule.class);
-                userDate = schedule.date;
-                userLocation = schedule.location;
-                userSport = schedule.sport;
-            }
-            @Override
-            public void onCancelled(DatabaseError error) {
-                // Failed to read value
-                Log.w(TAG, "Failed to read value.", error.toException());
-            }
-        });
+        mInstance.getReference().child("Users").child(uid)
+                .addValueEventListener(
+                        new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                User user = dataSnapshot.getValue(User.class);
+                                userUsername = user.username;
+                            }
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+                                Log.w(TAG, "Failed to read value.");
+                            }
+                        });
+            mInstance.getReference("Schedules").child(uid).addValueEventListener(new ValueEventListener() { //collect logged in user's allDate,allLocation, and allSport
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if(dataSnapshot.exists()) {
+                        Schedule schedule = dataSnapshot.getValue(Schedule.class);
+                        userDate = schedule.date;
+                        userLocation = schedule.location;
+                        userSport = schedule.sport;
+                    }
+                    else {
+                        test.setText("lol");
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError error) {
+                    // Failed to read value
+                    Log.w(TAG, "Failed to read value.", error.toException());
+                }
+            });
+
 //TODO untuk match data masih belum berhasil
 
+        mInstance.getReference().child("Users")
+                .addValueEventListener(
+                        new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                collectUsername((Map<String, Object>) dataSnapshot.getValue());
+                            }
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+                                Log.w(TAG, "Failed to read value.");
+                            }
+                        });
 
         mInstance.getReference().child("Schedules")
                 .addValueEventListener(
-                new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        //Get map of users in datasnapshot
-                        collectDate((Map<String, Object>) dataSnapshot.getValue());
-                        collectLocation((Map<String, Object>) dataSnapshot.getValue());
-                        collectSport((Map<String, Object>) dataSnapshot.getValue());
-                        //DELETE LOGGED IN USER'S DATAS IN THE ARRAY
-                        allDate.remove(userDate);
-                        allLocation.remove(userLocation);
-                        allSport.remove(userSport);
+                        new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                if (dataSnapshot.child(uid).exists()){ //in case user haven't made a schedule
 
-                        test.setText(userSport);
+                                    //Get map of users in datasnapshot
+                                    collectDate((Map<String, Object>) dataSnapshot.getValue());
+                                collectLocation((Map<String, Object>) dataSnapshot.getValue());
+                                collectSport((Map<String, Object>) dataSnapshot.getValue());
+                                //DELETE LOGGED IN USER'S DATAS IN THE ARRAY
+                                allDate.remove(userDate);
+                                allLocation.remove(userLocation);
+                                allSport.remove(userSport);
+                                allUsername.remove(userUsername);
+                                test.setText(userSport);
 
-                        //COMPARE USER'S SCHEDULE VALUES TO ALL EXISTING SCHEDULE
-                        for(int i=0;i<allDate.size();i++){
-                            if(userDate.equals(allDate.get(i)) && userSport.equals(allSport.get(i)) && userLocation.equals(allLocation.get(i))){
-                               test.setText("MATCH FOUND!");
-                               break;
-                            }
+                                //COMPARE USER'S SCHEDULE VALUES TO ALL EXISTING SCHEDULE
+                                for (i = 0; i < allDate.size(); i++) {
+                                    if (userDate.equals(allDate.get(i)) && userSport.equals(allSport.get(i)) && userLocation.equals(allLocation.get(i))) {
+                                        test.setText("MATCH FOUND with " + allUsername.get(i) +"!");
+                                        break;
+                                    }
 
-                            test.setText(Arrays.toString(allSport.toArray()));
+                                    test.setText("No match found yet...");
+
+                                }
+                            } else{
+                                    test.setText("No schedule have been made.");
+                                }
+                                i=0;
                         }
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        Log.w(TAG, "Failed to read value.");
-                    }
-                });
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+                                Log.w(TAG, "Failed to read value.");
+                            }
+                        });
 
      /*  mInstance.getReference("Schedules").addValueEventListener(new ValueEventListener(){
             @Override
@@ -211,7 +250,7 @@ private static final String TAG = MainMenu.class.getSimpleName();
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_find) {
+        if (id == R.id.nav_profile) {
             // Handle the camera action
         } else if (id == R.id.nav_signout) {
             signOut();
@@ -247,7 +286,7 @@ private static final String TAG = MainMenu.class.getSimpleName();
         if (authListener != null) {
             auth.removeAuthStateListener(authListener);
         }
-}
+    }
 
     public void collectDate (Map<String,Object> users) { //COLLECT ALL DATES
 
@@ -292,6 +331,21 @@ private static final String TAG = MainMenu.class.getSimpleName();
             allLocation.add((String) singleUser.get("location"));
         }
 
+
+    }
+    public void collectUsername (Map<String,Object> users) {
+
+
+
+        //iterate through each user, ignoring their UID
+        for (Map.Entry<String, Object> entry : users.entrySet()){
+
+            //Get user map
+            Map singleUser = (Map) entry.getValue();
+            //Get phone field and append to list
+            allUsername.add((String) singleUser.get("username"));
+        }
+        //Arrays.toString(allUsername.toArray());
 
     }
 }
