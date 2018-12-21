@@ -156,7 +156,7 @@ public class MainMenu extends AppCompatActivity
                                 allLocation.remove(userLocation);
                                 allSport.remove(userSport);
                                 allUsername.remove(userUsername);
-                                test.setText(userSport);
+                                test.setText("No match found yet...");
 
                                 //COMPARE USER'S SCHEDULE VALUES TO ALL EXISTING SCHEDULE
                                 for (i = 0; i < allDate.size(); i++) {
