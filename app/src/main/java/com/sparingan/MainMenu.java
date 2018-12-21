@@ -45,6 +45,8 @@ public class MainMenu extends AppCompatActivity
     private ArrayList<String> allDate = new ArrayList<>();
     private ArrayList<String> allSport = new ArrayList<>();
     private ArrayList<String> allUsername = new ArrayList<>();
+    private ArrayList<String> allWA = new ArrayList<>();
+    private ArrayList<String> allPhone = new ArrayList<>();
     private static final String TAG = MainMenu.class.getSimpleName();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,6 +121,8 @@ public class MainMenu extends AppCompatActivity
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 collectUsername((Map<String, Object>) dataSnapshot.getValue());
+                                collectWA((Map<String, Object>) dataSnapshot.getValue());
+                                collectPhone((Map<String, Object>) dataSnapshot.getValue());
                             }
                             @Override
                             public void onCancelled(DatabaseError databaseError) {
@@ -148,6 +152,9 @@ public class MainMenu extends AppCompatActivity
                                 for (i = 0; i < allDate.size(); i++) {
                                     if (userDate.equals(allDate.get(i)) && userSport.equals(allSport.get(i)) && userLocation.equals(allLocation.get(i))) {
                                         test.setText("MATCH FOUND with " + allUsername.get(i) +"!");
+                                        UsersRef.child(uid).child("partner").child("userP").setValue(allUsername.get(i));
+                                        UsersRef.child(uid).child("partner").child("linkwaP").setValue(allWA.get(i));
+                                        UsersRef.child(uid).child("partner").child("phoneP").setValue(allPhone.get(i));
                                         break;
                                     }
 
@@ -327,6 +334,36 @@ public class MainMenu extends AppCompatActivity
             Map singleUser = (Map) entry.getValue();
             //Get phone field and append to list
             allUsername.add((String) singleUser.get("username"));
+        }
+        //Arrays.toString(allUsername.toArray());
+
+    }
+    public void collectWA (Map<String,Object> users) {
+
+
+
+        //iterate through each user, ignoring their UID
+        for (Map.Entry<String, Object> entry : users.entrySet()){
+
+            //Get user map
+            Map singleUser = (Map) entry.getValue();
+            //Get phone field and append to list
+            allWA.add((String) singleUser.get("linkwa"));
+        }
+        //Arrays.toString(allUsername.toArray());
+
+    }
+    public void collectPhone (Map<String,Object> users) {
+
+
+
+        //iterate through each user, ignoring their UID
+        for (Map.Entry<String, Object> entry : users.entrySet()){
+
+            //Get user map
+            Map singleUser = (Map) entry.getValue();
+            //Get phone field and append to list
+            allPhone.add((String) singleUser.get("phone"));
         }
         //Arrays.toString(allUsername.toArray());
 
