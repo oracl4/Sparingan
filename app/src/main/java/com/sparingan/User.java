@@ -9,7 +9,7 @@ import com.google.firebase.database.IgnoreExtraProperties;
 @IgnoreExtraProperties
 public class User {
 
-    public String username,email,phone,linkwa;
+    public String username,email,phone,linkwa,imageurl;
 
 
     // Default constructor required for calls to
@@ -22,6 +22,10 @@ public class User {
         this.email = email;
         this.phone = phone;
         this.linkwa = linkwa;
+    }
+
+    public User(String imageurl){
+        this.imageurl = imageurl;
     }
 
     public String getUsername() {

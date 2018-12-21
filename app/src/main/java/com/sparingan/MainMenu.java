@@ -62,10 +62,10 @@ public class MainMenu extends AppCompatActivity
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         auth = FirebaseAuth.getInstance();
-        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+      //  final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         //Show Welcome text in main menu
         UsersRef.child(uid).addValueEventListener(new ValueEventListener() {
-            @Override
+                @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
 
@@ -100,7 +100,7 @@ public class MainMenu extends AppCompatActivity
                         userSport = schedule.sport;
                     }
                     else {
-                        test.setText("lol");
+                        test.setText("data failed to get");
                     }
                 }
 
@@ -134,7 +134,7 @@ public class MainMenu extends AppCompatActivity
                                 if (dataSnapshot.child(uid).exists()){ //in case user haven't made a schedule
 
                                     //Get map of users in datasnapshot
-                                    collectDate((Map<String, Object>) dataSnapshot.getValue());
+                                 collectDate((Map<String, Object>) dataSnapshot.getValue());
                                 collectLocation((Map<String, Object>) dataSnapshot.getValue());
                                 collectSport((Map<String, Object>) dataSnapshot.getValue());
                                 //DELETE LOGGED IN USER'S DATAS IN THE ARRAY
@@ -165,22 +165,7 @@ public class MainMenu extends AppCompatActivity
                             }
                         });
 
-     /*  mInstance.getReference("Schedules").addValueEventListener(new ValueEventListener(){
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot,String prevChildKey) {
-                for (DataSnapshot childDataSnapshot : dataSnapshot.getChildren()) {
 
-                    test.setText(childDataSnapshot.getKey());
-                }
-                Schedule schedule = dataSnapshot.child(uid).getValue(Schedule.class);
-
-            }
-
-            public void onCancelled(DatabaseError error) {
-                // Failed to read value
-                Log.w(TAG, "Failed to read value.", error.toException());
-            }
-        });*/
 
         authListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -251,6 +236,7 @@ public class MainMenu extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_profile) {
+            startActivity(new Intent(MainMenu.this, ProfileScreen.class));
             // Handle the camera action
         } else if (id == R.id.nav_signout) {
             signOut();
@@ -275,9 +261,6 @@ public class MainMenu extends AppCompatActivity
     public void onStart() {
         super.onStart();
         auth.addAuthStateListener(authListener);
-
-
-
     }
 
     @Override

@@ -3,7 +3,7 @@
     package="com.sparingan">
 
     <uses-permission android:name="android.permission.INTERNET" />
-
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -27,7 +27,6 @@
             android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity android:name=".ForgotPassword" />
         <activity android:name=".CreateSchedule" />
-        <activity android:name=".ScheduleSaved" />
         <activity android:name=".ProfileScreen"></activity>
     </application>
 
