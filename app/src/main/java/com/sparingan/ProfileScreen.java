@@ -145,7 +145,7 @@ private static final String TAG = ProfileScreen.class.getSimpleName();
                             progressDialog.dismiss();
                             ref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                                                           @Override
-                                                                          public void onSuccess(Uri uri) {
+                                                                          public void onSuccess(Uri uri) {//MENGAMBIL URL DARI GAMBAR
                                                                               Uri downloadUrl = uri;
                                                                               Log.w(TAG, downloadUrl.toString());
                                                                               User user = new User(downloadUrl.toString());
@@ -155,9 +155,7 @@ private static final String TAG = ProfileScreen.class.getSimpleName();
                                                                       });
                             Toast.makeText(ProfileScreen.this, "Successfully updated your profile picture!", Toast.LENGTH_SHORT).show();
 
-                            //Log.w(TAG,taskSnapshot.getUploadSessionUri().toString());
-                            //TODO: UDAH BISA GANTI GAMBAR N UPLOAD, BELOM BISA SAVE GAMBAR KE UID
-                            //Log.w(TAG,storageReference.child("images/"+uid+".jpg").getDownloadUrl().toString());
+
 
 
                             // User user = new User(taskSnapshot.getUploadSessionUri().toString());

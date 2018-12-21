@@ -69,9 +69,14 @@ public class MainMenu extends AppCompatActivity
         UsersRef.child(uid).addValueEventListener(new ValueEventListener() {
                 @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                User user = dataSnapshot.getValue(User.class);
+                    if(dataSnapshot.exists()) {
+                        User user = dataSnapshot.getValue(User.class);
 
-                welcome.setText("Welcome , " + user.username+  " ! ");
+                        welcome.setText("Welcome , " + user.username + " ! ");
+                    }
+                    else {
+
+                    }
             }
             @Override
             public void onCancelled(DatabaseError error) {
@@ -84,8 +89,13 @@ public class MainMenu extends AppCompatActivity
                         new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
+                                if(dataSnapshot.exists()){
                                 User user = dataSnapshot.getValue(User.class);
                                 userUsername = user.username;
+                                }
+                                else{
+
+                                }
                             }
                             @Override
                             public void onCancelled(DatabaseError databaseError) {
