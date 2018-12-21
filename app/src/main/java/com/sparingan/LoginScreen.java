@@ -16,13 +16,15 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.kaopiz.kprogresshud.KProgressHUD;
 
 public class LoginScreen extends AppCompatActivity {
 
     private EditText inputEmail,inputPassword;
     private FirebaseAuth auth;
     private Button btnLogin,btnSignUp,btnForgot;
-    private ProgressBar loading;
+    private KProgressHUD hud;
+   // private ProgressBar loading;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -33,8 +35,14 @@ public class LoginScreen extends AppCompatActivity {
             finish();
         } /*Kalau User sudah Login sebelumnya, langsung ke main menu */
         setContentView(R.layout.activity_login);
-        loading = (ProgressBar) findViewById(R.id.loading1);
-        loading.setVisibility(View.GONE);
+       // Lib untuk loading dialog
+      hud =KProgressHUD.create(LoginScreen.this)
+              .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+              .setLabel("Please wait")
+              .setDetailsLabel("Signing")
+              .setCancellable(true)
+              .setAnimationSpeed(2)
+              .setDimAmount(0.8f);
         btnLogin = (Button) findViewById(R.id.login_button);
         btnSignUp = (Button) findViewById(R.id.go_to_reg_button);
         inputEmail = (EditText) findViewById(R.id.email_forgot_et);
@@ -62,6 +70,7 @@ public class LoginScreen extends AppCompatActivity {
                 String email = inputEmail.getText().toString();
                 final String password = inputPassword.getText().toString();
 
+
                 if (TextUtils.isEmpty(email)) {
                     Toast.makeText(getApplicationContext(), "Enter email address!", Toast.LENGTH_SHORT).show();
                     return;
@@ -73,8 +82,8 @@ public class LoginScreen extends AppCompatActivity {
                 }
                 getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
                         WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                loading.setVisibility(View.VISIBLE);
 
+                hud.show();
                 //authenticate user
                 auth.signInWithEmailAndPassword(email, password)
                         .addOnCompleteListener(LoginScreen.this, new OnCompleteListener<AuthResult>() {
@@ -86,16 +95,18 @@ public class LoginScreen extends AppCompatActivity {
 
                                 if (!task.isSuccessful()) {
                                     // there was an error
+                                    hud.dismiss();
                                     getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                                    loading.setVisibility(View.GONE);
+
                                     if (password.length() < 6) {
                                         inputPassword.setError(getString(R.string.minimum_password));
                                     } else {
                                         Toast.makeText(LoginScreen.this, getString(R.string.auth_failed), Toast.LENGTH_LONG).show();
                                     }
                                 } else {
+                                    hud.dismiss();
                                     getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                                    loading.setVisibility(View.GONE);
+
                                     Intent intent = new Intent(LoginScreen.this, MainMenu.class);
                                     startActivity(intent);
                                     finish();
