@@ -7,5 +7,20 @@
     <color name="velvet">#f92241</color>
     <color name="white">#FFFFFF</color>
     <color name="signupColor">#fbda36</color>
+    <color name="grey2">#e0e0d1</color>
+    <color name="address">#2F7092</color>
+    <color name="followers">#0D5D98</color>
+    <color name="headings">#D81B60</color>
+    <color name="solidCircle">#AAFFFFFF</color>
+    <color name="circleBorder">#50FFFFFF</color>
+    <color name="gradEnd">#ffff48</color>
+    <color name="gradStart">#fa9222</color>
+    <color name="followersBg">#D81B60</color>
+    <color name="followingBg">#f92241</color>
+    <color name="grey">#E5E5E5</color>
+    <color name="black">#080808</color>
+
+
+
 
 </resources>

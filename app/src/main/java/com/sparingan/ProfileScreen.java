@@ -1,5 +1,6 @@
 package com.sparingan;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -52,6 +53,7 @@ private FirebaseAuth.AuthStateListener authListener;
 private final int PICK_IMAGE_REQUEST = 71;
 private static final String TAG = ProfileScreen.class.getSimpleName();
 
+    @SuppressLint("WrongViewCast")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,7 +66,7 @@ private static final String TAG = ProfileScreen.class.getSimpleName();
         storageReference = storage.getReference();
         //init objects
         profile_picture = (ImageView) findViewById(R.id.profile_pic);
-        change = (Button)findViewById(R.id.chg_pic);
+       change = (Button)findViewById(R.id.chg_pic);
         profilename = (TextView) findViewById(R.id.profile_name);
         profilephone = (TextView) findViewById(R.id.profile_phone);
         profileemail = (TextView) findViewById(R.id.profile_email);
@@ -94,7 +96,7 @@ private static final String TAG = ProfileScreen.class.getSimpleName();
             });
 
 
-        change.setOnClickListener(new View.OnClickListener() {
+       change.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 chooseImage();
