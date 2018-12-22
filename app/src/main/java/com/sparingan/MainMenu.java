@@ -54,6 +54,7 @@ public class MainMenu extends AppCompatActivity
         setContentView(R.layout.activity_main_menu);
         findButton = (Button) findViewById(R.id.findpartner);
         test = (TextView)findViewById(R.id.Text);
+        test.setText("No schedule have been made.");
         //get Database Instance
         mInstance = FirebaseDatabase.getInstance();
         //get database reference from Users node
@@ -72,7 +73,7 @@ public class MainMenu extends AppCompatActivity
                     if(dataSnapshot.exists()) {
                         User user = dataSnapshot.getValue(User.class);
 
-                        welcome.setText("Welcome , " + user.username + " ! ");
+                        welcome.setText(user.username);
                     }
                     else {
 
