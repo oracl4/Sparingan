@@ -36,7 +36,8 @@ public class MainMenu extends AppCompatActivity
     private FirebaseAuth auth;
     private FirebaseAuth.AuthStateListener authListener;
     private Button findButton;
-    private TextView welcome,test;
+    private Button exerciseButton;
+    private TextView welcome,test,hurray;
     private String uid;
     private FirebaseDatabase mInstance;
     private DatabaseReference UsersRef;
@@ -53,8 +54,13 @@ public class MainMenu extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
         findButton = (Button) findViewById(R.id.findpartner);
+        findButton.setEnabled(true);
+        exerciseButton=(Button) findViewById(R.id.exercise );
+        exerciseButton.setVisibility(View.GONE);
         test = (TextView)findViewById(R.id.Text);
         test.setText("No schedule have been made.");
+        hurray=(TextView)findViewById(R.id.hurray);
+        hurray.setVisibility(View.GONE);
         //get Database Instance
         mInstance = FirebaseDatabase.getInstance();
         //get database reference from Users node
@@ -162,10 +168,15 @@ public class MainMenu extends AppCompatActivity
                                 //COMPARE USER'S SCHEDULE VALUES TO ALL EXISTING SCHEDULE
                                 for (i = 0; i < allDate.size(); i++) {
                                     if (userDate.equals(allDate.get(i)) && userSport.equals(allSport.get(i)) && userLocation.equals(allLocation.get(i))) {
-                                        test.setText("MATCH FOUND with " + allUsername.get(i) +"!");
+                                        exerciseButton.setVisibility(View.VISIBLE);
+                                        hurray.setVisibility(View.VISIBLE);
+                                        hurray.setText("Hurray! We've found you partner " + allUsername.get(i));
+                                        test.setText("Your partner name is  " + allUsername.get(i) +"!");
                                         UsersRef.child(uid).child("partner").child("userP").setValue(allUsername.get(i));
                                         UsersRef.child(uid).child("partner").child("linkwaP").setValue(allWA.get(i));
                                         UsersRef.child(uid).child("partner").child("phoneP").setValue(allPhone.get(i));
+                                        findButton.setEnabled(false);
+                                        findButton.setBackgroundResource(R.drawable.disabled_button);
                                         break;
                                     }
 
