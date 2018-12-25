@@ -4,6 +4,8 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -11,8 +13,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.NoActionBar">
-        <activity android:name=".LoginScreen">
-        </activity>
+        <activity android:name=".LoginScreen"></activity>
         <activity android:name=".SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -29,7 +30,11 @@
             android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity android:name=".ForgotPassword" />
         <activity android:name=".CreateSchedule" />
-        <activity android:name=".ProfileScreen"></activity>
+        <activity android:name=".ProfileScreen" />
+        <activity
+            android:name=".TipsActivity"
+            android:label="@string/title_activity_tips"
+            android:theme="@style/Theme.AppCompat.NoActionBar"></activity>
     </application>
 
 </manifest>
