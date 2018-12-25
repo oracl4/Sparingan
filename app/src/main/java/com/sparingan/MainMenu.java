@@ -270,7 +270,7 @@ public class MainMenu extends AppCompatActivity
         } else if (id == R.id.nav_signout) {
             signOut();
         } else if (id == R.id.nav_Tips) {
-            startActivity(new Intent(MainMenu.this, ProfileScreen.class));
+            startActivity(new Intent(MainMenu.this, TipsActivity.class));
         }
         /* else if (id == R.id.nav_manage) {
 
