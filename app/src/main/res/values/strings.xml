@@ -57,6 +57,7 @@
     <string name="dialog_log_out">Are you sure you want to log out? </string>
     <string name="dialog_match_found">Match Found!</string>
     <string name="profile">My Profile</string>
+    <string name="change_schedule">Change Schedule</string>
     <string-array name="dateArray">
         <item>01</item>
         <item>02</item>

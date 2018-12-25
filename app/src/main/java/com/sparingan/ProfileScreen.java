@@ -104,7 +104,7 @@ private static final String TAG = ProfileScreen.class.getSimpleName();
             }
 
         });
-//GET CURRENT USER LOGGED IN
+        //GET CURRENT USER LOGGED IN
         UsersRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

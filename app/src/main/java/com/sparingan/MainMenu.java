@@ -2,6 +2,8 @@ package com.sparingan;
 
 import android.content.Intent;
 import android.os.Bundle;
+
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseUser;
 
 import android.support.annotation.NonNull;
@@ -26,8 +28,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
+import java.util.Locale;
 import java.util.Map;
 
 public class MainMenu extends AppCompatActivity
@@ -36,7 +41,7 @@ public class MainMenu extends AppCompatActivity
     private FirebaseAuth auth;
     private FirebaseAuth.AuthStateListener authListener;
     private Button findButton;
-    private Button exerciseButton;
+    private Button exerciseButton,changeSchedule;
     private TextView welcome,test,hurray;
     private String uid;
     private FirebaseDatabase mInstance;
@@ -53,6 +58,9 @@ public class MainMenu extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
+        changeSchedule = (Button)findViewById(R.id.changeschedule);
+        changeSchedule.setEnabled(true);
+        changeSchedule.setVisibility(View.GONE);
         findButton = (Button) findViewById(R.id.findpartner);
         findButton.setEnabled(true);
         exerciseButton=(Button) findViewById(R.id.exercise );
@@ -71,6 +79,16 @@ public class MainMenu extends AppCompatActivity
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         auth = FirebaseAuth.getInstance();
+        //TODAYS DATE
+        final String date = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(new Date());
+        //go to Exercise Screen
+        exerciseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainMenu.this, Exercise.class));
+            }
+        });
+
       //  final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         //Show Welcome text in main menu
         UsersRef.child(uid).addValueEventListener(new ValueEventListener() {
@@ -78,7 +96,7 @@ public class MainMenu extends AppCompatActivity
             public void onDataChange(DataSnapshot dataSnapshot) {
                     if(dataSnapshot.exists()) {
                         User user = dataSnapshot.getValue(User.class);
-
+                        userUsername = user.username;
                         welcome.setText(user.username);
                     }
                     else {
@@ -91,7 +109,8 @@ public class MainMenu extends AppCompatActivity
                 Log.w(TAG, "Failed to read value.", error.toException());
             }
         });
-        mInstance.getReference().child("Users").child(uid)
+        //get
+      /*  mInstance.getReference().child("Users").child(uid)
                 .addValueEventListener(
                         new ValueEventListener() {
                             @Override
@@ -108,8 +127,9 @@ public class MainMenu extends AppCompatActivity
                             public void onCancelled(DatabaseError databaseError) {
                                 Log.w(TAG, "Failed to read value.");
                             }
-                        });
-            mInstance.getReference("Schedules").child(uid).addValueEventListener(new ValueEventListener() { //collect logged in user's allDate,allLocation, and allSport
+                        });*/
+        //Collect logged in user's allDate,allLocation, and allSport
+            mInstance.getReference("Schedules").child(uid).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     if(dataSnapshot.exists()) {
@@ -130,23 +150,25 @@ public class MainMenu extends AppCompatActivity
                 }
             });
 
-//TODO untuk match data masih belum berhasil
+//TODO untuk match data berhasil hanya kalau jumlah USER == JUMLAH SCHEDULE (??)
 
         mInstance.getReference().child("Users")
                 .addValueEventListener(
                         new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
+                                if(dataSnapshot.exists()){
                                 collectUsername((Map<String, Object>) dataSnapshot.getValue());
                                 collectWA((Map<String, Object>) dataSnapshot.getValue());
                                 collectPhone((Map<String, Object>) dataSnapshot.getValue());
+                            }
                             }
                             @Override
                             public void onCancelled(DatabaseError databaseError) {
                                 Log.w(TAG, "Failed to read value.");
                             }
                         });
-
+// Mengambil semua data di Schedules
         mInstance.getReference().child("Schedules")
                 .addValueEventListener(
                         new ValueEventListener() {
@@ -163,23 +185,45 @@ public class MainMenu extends AppCompatActivity
                                 allLocation.remove(userLocation);
                                 allSport.remove(userSport);
                                 allUsername.remove(userUsername);
-                                test.setText("No match found yet...");
+                                //test.setText("No match found yet...");
 
                                 //COMPARE USER'S SCHEDULE VALUES TO ALL EXISTING SCHEDULE
                                 for (i = 0; i < allDate.size(); i++) {
-                                    if (userDate.equals(allDate.get(i)) && userSport.equals(allSport.get(i)) && userLocation.equals(allLocation.get(i))) {
+                                    if (userDate.equals(allDate.get(i)) && userSport.equals(allSport.get(i)) && userLocation.equals(allLocation.get(i)) && date.equals(userDate)) { //MATCH SAAT SUDAH TANGGALNYA
                                         exerciseButton.setVisibility(View.VISIBLE);
                                         hurray.setVisibility(View.VISIBLE);
-                                        hurray.setText("Hurray! We've found you partner " + allUsername.get(i));
-                                        test.setText("Your partner name is  " + allUsername.get(i) +"!");
+                                        hurray.setText("Hurray! We've found you partner for " + allDate.get(i));
+                                        test.setText("Your partner is  " + allUsername.get(i) +"!");
                                         UsersRef.child(uid).child("partner").child("userP").setValue(allUsername.get(i));
+                                        UsersRef.child(uid).child("partner").child("sportP").setValue(allSport.get(i));
+                                        UsersRef.child(uid).child("partner").child("locationP").setValue(allLocation.get(i));
+                                        UsersRef.child(uid).child("partner").child("dateP").setValue(allDate.get(i));
                                         UsersRef.child(uid).child("partner").child("linkwaP").setValue(allWA.get(i));
                                         UsersRef.child(uid).child("partner").child("phoneP").setValue(allPhone.get(i));
-                                        findButton.setEnabled(false);
-                                        findButton.setBackgroundResource(R.drawable.disabled_button);
+                                        findButton.setVisibility(View.GONE);
+                                        changeSchedule.setVisibility(View.VISIBLE);
+                                        changeSchedule.setEnabled(false);
+                                        changeSchedule.setBackgroundResource(R.drawable.disabled_button);
+                                        break;
+
+                                    } else if(userDate.equals(allDate.get(i)) && userSport.equals(allSport.get(i)) && userLocation.equals(allLocation.get(i))) { //MATCH TAPI BELUM TANGGALNYA
+                                        hurray.setVisibility(View.VISIBLE);
+                                        hurray.setText("Hurray! We've found you partner for the date : " + allDate.get(i));
+                                        test.setText("Your partner is  " + allUsername.get(i) +"!");
+                                        findButton.setVisibility(View.GONE);
+                                        changeSchedule.setVisibility(View.VISIBLE);
+                                        //test.setText(Arrays.toString(allUsername.toArray()));
+                                        UsersRef.child(uid).child("partner").child("userP").setValue(allUsername.get(i));
+                                        UsersRef.child(uid).child("partner").child("sportP").setValue(allSport.get(i));
+                                        UsersRef.child(uid).child("partner").child("locationP").setValue(allLocation.get(i));
+                                        UsersRef.child(uid).child("partner").child("dateP").setValue(allDate.get(i));
+                                        UsersRef.child(uid).child("partner").child("linkwaP").setValue(allWA.get(i));
+                                        UsersRef.child(uid).child("partner").child("phoneP").setValue(allPhone.get(i));
                                         break;
                                     }
-
+                                    hurray.setVisibility(View.GONE);
+                                    findButton.setVisibility(View.GONE);
+                                    changeSchedule.setVisibility(View.VISIBLE);
                                     test.setText("No match found yet...");
 
                                 }
@@ -208,6 +252,13 @@ public class MainMenu extends AppCompatActivity
                 }}};
 
         findButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                startActivity(new Intent(MainMenu.this, CreateSchedule.class));
+            }
+
+        });
+        changeSchedule.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
                 startActivity(new Intent(MainMenu.this, CreateSchedule.class));
@@ -327,6 +378,7 @@ public class MainMenu extends AppCompatActivity
             Map singleUser = (Map) entry.getValue();
             //Get phone field and append to list
             allSport.add((String) singleUser.get("sport"));
+
         }
 
 
