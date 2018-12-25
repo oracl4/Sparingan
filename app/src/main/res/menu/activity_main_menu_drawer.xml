@@ -14,7 +14,7 @@
         android:title="@string/btn_sign_out" />
         <item
             android:id="@+id/nav_Tips"
-            android:icon="@drawable/news"
+            android:icon="@drawable/ic_menu_send"
             android:title="News" />
 
     </group>
