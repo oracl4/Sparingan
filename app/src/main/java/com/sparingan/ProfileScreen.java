@@ -76,13 +76,18 @@ private static final String TAG = ProfileScreen.class.getSimpleName();
         UsersRef = mInstance.getReference("Users");
 
 //GET PROFILE PIC IF EXISTS
-            UsersRef.child(uid).child("profilepic").child("imageurl").addValueEventListener(new ValueEventListener() {
+            UsersRef.child(uid).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     if(dataSnapshot.exists()){
-                        String url = dataSnapshot.getValue().toString();
+                        User user = dataSnapshot.getValue(User.class);
+                        if(user.imageurl == null){
+
+                        }else {
+                        String url = user.imageurl;
                         Picasso.get().load(url).into(profile_picture);
                         Log.w(TAG,url);
+                        }
                     }
                     else {
 
@@ -150,8 +155,7 @@ private static final String TAG = ProfileScreen.class.getSimpleName();
                                                                           public void onSuccess(Uri uri) {//MENGAMBIL URL DARI GAMBAR
                                                                               Uri downloadUrl = uri;
                                                                               Log.w(TAG, downloadUrl.toString());
-                                                                              User user = new User(downloadUrl.toString());
-                                                                              FirebaseDatabase.getInstance().getReference("Users").child(uid).child("profilepic").setValue(user);
+                                                                              FirebaseDatabase.getInstance().getReference("Users").child(uid).child("imageurl").setValue(downloadUrl.toString());
                                                                               //Do what you want with the url
                                                                           }
                                                                       });

@@ -47,6 +47,7 @@ public class MainMenu extends AppCompatActivity
     private FirebaseDatabase mInstance;
     private DatabaseReference UsersRef;
     private String userDate,userLocation,userSport,userUsername;
+    private ArrayList<String> allImage = new ArrayList<>();
     private ArrayList<String> allLocation = new ArrayList<>();
     private ArrayList<String> allDate = new ArrayList<>();
     private ArrayList<String> allSport = new ArrayList<>();
@@ -97,7 +98,11 @@ public class MainMenu extends AppCompatActivity
                     if(dataSnapshot.exists()) {
                         User user = dataSnapshot.getValue(User.class);
                         userUsername = user.username;
-                        welcome.setText(user.username);
+                        if(userUsername == null){
+
+                        }else {
+                            welcome.setText(user.username);
+                        }
                     }
                     else {
 
@@ -158,6 +163,7 @@ public class MainMenu extends AppCompatActivity
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 if(dataSnapshot.exists()){
+                                collectImage((Map<String,Object>) dataSnapshot.getValue());
                                 collectUsername((Map<String, Object>) dataSnapshot.getValue());
                                 collectWA((Map<String, Object>) dataSnapshot.getValue());
                                 collectPhone((Map<String, Object>) dataSnapshot.getValue());
@@ -175,7 +181,6 @@ public class MainMenu extends AppCompatActivity
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 if (dataSnapshot.child(uid).exists()){ //in case user haven't made a schedule
-
                                     //Get map of users in datasnapshot
                                  collectDate((Map<String, Object>) dataSnapshot.getValue());
                                 collectLocation((Map<String, Object>) dataSnapshot.getValue());
@@ -200,10 +205,13 @@ public class MainMenu extends AppCompatActivity
                                         UsersRef.child(uid).child("partner").child("dateP").setValue(allDate.get(i));
                                         UsersRef.child(uid).child("partner").child("linkwaP").setValue(allWA.get(i));
                                         UsersRef.child(uid).child("partner").child("phoneP").setValue(allPhone.get(i));
+                                        UsersRef.child(uid).child("partner").child("imageP").setValue(allImage.get(i));
+                                       // Log.w(TAG, allImage.get(i));
                                         findButton.setVisibility(View.GONE);
                                         changeSchedule.setVisibility(View.VISIBLE);
                                         changeSchedule.setEnabled(false);
                                         changeSchedule.setBackgroundResource(R.drawable.disabled_button);
+                                        i=0;
                                         break;
 
                                     } else if(userDate.equals(allDate.get(i)) && userSport.equals(allSport.get(i)) && userLocation.equals(allLocation.get(i))) { //MATCH TAPI BELUM TANGGALNYA
@@ -219,6 +227,9 @@ public class MainMenu extends AppCompatActivity
                                         UsersRef.child(uid).child("partner").child("dateP").setValue(allDate.get(i));
                                         UsersRef.child(uid).child("partner").child("linkwaP").setValue(allWA.get(i));
                                         UsersRef.child(uid).child("partner").child("phoneP").setValue(allPhone.get(i));
+                                        UsersRef.child(uid).child("partner").child("imageP").setValue(allImage.get(i));
+                                        //Log.w(TAG, allImage.get(i));
+                                        i=0; //reset i
                                         break;
                                     }
                                     hurray.setVisibility(View.GONE);
@@ -439,6 +450,26 @@ public class MainMenu extends AppCompatActivity
             Map singleUser = (Map) entry.getValue();
             //Get phone field and append to list
             allPhone.add((String) singleUser.get("phone"));
+        }
+        //Arrays.toString(allUsername.toArray());
+
+    }
+    public void collectImage (Map<String,Object> users) {
+
+
+
+        //iterate through each user, ignoring their UID
+        for (Map.Entry<String, Object> entry : users.entrySet()){
+
+            //Get user map
+            Map singleUser = (Map) entry.getValue();
+            //Get phone field and append to list
+            if(singleUser.get("imageurl") == null){
+                allImage.add("nopic");
+            }
+                allImage.add((String) singleUser.get("imageurl"));
+
+
         }
         //Arrays.toString(allUsername.toArray());
 
