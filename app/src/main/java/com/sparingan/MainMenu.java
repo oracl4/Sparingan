@@ -55,6 +55,10 @@ public class MainMenu extends AppCompatActivity
     private ArrayList<String> allWA = new ArrayList<>();
     private ArrayList<String> allPhone = new ArrayList<>();
     private static final String TAG = MainMenu.class.getSimpleName();
+
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -134,6 +138,8 @@ public class MainMenu extends AppCompatActivity
                             }
                         });*/
         //Collect logged in user's allDate,allLocation, and allSport
+
+
             mInstance.getReference("Schedules").child(uid).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -191,7 +197,7 @@ public class MainMenu extends AppCompatActivity
                                 allSport.remove(userSport);
                                 allUsername.remove(userUsername);
                                 //test.setText("No match found yet...");
-
+            if (userDate!="0"){
                                 //COMPARE USER'S SCHEDULE VALUES TO ALL EXISTING SCHEDULE
                                 for (i = 0; i < allDate.size(); i++) {
                                     if (userDate.equals(allDate.get(i)) && userSport.equals(allSport.get(i)) && userLocation.equals(allLocation.get(i)) && date.equals(userDate)) { //MATCH SAAT SUDAH TANGGALNYA
@@ -237,7 +243,7 @@ public class MainMenu extends AppCompatActivity
                                     changeSchedule.setVisibility(View.VISIBLE);
                                     test.setText("No match found yet...");
 
-                                }
+                                }}
                             } else{
                                     test.setText("No schedule have been made.");
                                 }

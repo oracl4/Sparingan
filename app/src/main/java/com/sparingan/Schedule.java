@@ -11,6 +11,7 @@ public class Schedule {
         this.sport = sport;
         this.location = location;
         this.date = date;
+
     }
 
     public String getSport() {
@@ -29,12 +30,12 @@ public class Schedule {
         this.location = location;
     }
 
-    public String getDate() {
-        return date;
-    }
+    public String getDate() { return date; }
 
     public void setDate(String date) {
         this.date = date;
     }
+
+
 }
 

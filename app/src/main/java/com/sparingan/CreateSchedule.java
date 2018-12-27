@@ -20,6 +20,13 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ValueEventListener;
 
 import android.widget.ProgressBar;
 import android.widget.Spinner;
@@ -137,6 +144,7 @@ public class CreateSchedule extends Activity implements OnItemSelectedListener{
                 String sport = Arrays.toString(sportString);
                 String location = Arrays.toString(lokasiString);
                 String dateString = date.getText().toString();
+
                 Schedule schedule = new Schedule(sport,location,dateString);
                 FirebaseDatabase.getInstance().getReference("Schedules").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(schedule).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
@@ -174,6 +182,8 @@ public class CreateSchedule extends Activity implements OnItemSelectedListener{
     }*/
 
     }
+
+
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {

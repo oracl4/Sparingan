@@ -94,6 +94,24 @@ public class RegisterScreen extends AppCompatActivity {
                                            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                                            progressBar.setVisibility(View.GONE);
                                            Toast.makeText(RegisterScreen.this,getString(R.string.regist_success),Toast.LENGTH_LONG).show(); //TODO: Ganti ke dialog box
+                                           String sport = "0";
+                                           String location = "0";
+                                           String dateString = "0";
+
+                                           Schedule schedule = new Schedule(sport,location,dateString);
+                                           FirebaseDatabase.getInstance().getReference("Schedules").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(schedule).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                               @Override
+                                               public void onComplete(@NonNull Task<Void> task) {
+                                                   if (task.isSuccessful()) {
+                                                       finish();
+                                                   }
+                                                   else{
+
+                                                   }
+                                               }
+
+                                               ;
+                                           });
                                        }
                                    }
                                });

@@ -130,6 +130,24 @@ private static final String TAG = Rating.class.getSimpleName();
             mInstance.getReference("Rating").child(partnerName).child(String.valueOf(i)).child("feedback").setValue(feedbackString);
             mInstance.getReference("Rating").child(partnerName).child(String.valueOf(i)).child("point").setValue(point);
             startActivity(new Intent(Rating.this,MainMenu.class));
+            String sport = "0";
+            String location = "0";
+            String dateString = "0";
+
+            Schedule schedule = new Schedule(sport,location,dateString);
+            FirebaseDatabase.getInstance().getReference("Schedules").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(schedule).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if (task.isSuccessful()) {
+                        finish();
+                    }
+                    else{
+
+                    }
+                }
+
+                ;
+            });
 
         }
     });
