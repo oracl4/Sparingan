@@ -28,6 +28,9 @@ public class RegisterScreen extends AppCompatActivity {
  private EditText inputEmail,inputPassword,inputUsername,inputPhone;
  private Button btnSignUp,btnBack;
  private FirebaseAuth auth;
+ private String uid;
+ private FirebaseDatabase mInstance;
+ private DatabaseReference UsersRef;
  private ProgressBar progressBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,6 +100,12 @@ public class RegisterScreen extends AppCompatActivity {
                                            String sport = "0";
                                            String location = "0";
                                            String dateString = "0";
+                                           mInstance = FirebaseDatabase.getInstance();
+                                           //get database reference from Users node
+                                           UsersRef = mInstance.getReference("Users");
+                                           //Text view to edit
+                                           uid = FirebaseAuth.getInstance().getUid();
+                                           UsersRef.child(uid).child("inPartner").setValue("0");
 
                                            Schedule schedule = new Schedule(sport,location,dateString);
                                            FirebaseDatabase.getInstance().getReference("Schedules").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(schedule).addOnCompleteListener(new OnCompleteListener<Void>() {

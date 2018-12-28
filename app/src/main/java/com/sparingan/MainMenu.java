@@ -19,6 +19,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -37,16 +38,17 @@ import java.util.Map;
 
 public class MainMenu extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-    int i=0;
+    int i = 0;
     private FirebaseAuth auth;
     private FirebaseAuth.AuthStateListener authListener;
     private Button findButton;
-    private Button exerciseButton,changeSchedule;
-    private TextView welcome,test,hurray;
+    private Button exerciseButton, changeSchedule;
+    private TextView welcome, test, hurray;
     private String uid;
     private FirebaseDatabase mInstance;
     private DatabaseReference UsersRef;
-    private String userDate,userLocation,userSport,userUsername;
+    private String userDate, userLocation, userSport, userUsername, inPartner;
+    private String partnerDate, partnerLocation, partnerSport, partnerUsername;
     private ArrayList<String> allImage = new ArrayList<>();
     private ArrayList<String> allLocation = new ArrayList<>();
     private ArrayList<String> allDate = new ArrayList<>();
@@ -54,25 +56,25 @@ public class MainMenu extends AppCompatActivity
     private ArrayList<String> allUsername = new ArrayList<>();
     private ArrayList<String> allWA = new ArrayList<>();
     private ArrayList<String> allPhone = new ArrayList<>();
+    private ArrayList<String> allinPartner = new ArrayList<>();
     private static final String TAG = MainMenu.class.getSimpleName();
-
-
+    private Map<String, Object> partner;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
-        changeSchedule = (Button)findViewById(R.id.changeschedule);
+        changeSchedule = (Button) findViewById(R.id.changeschedule);
         changeSchedule.setEnabled(true);
         changeSchedule.setVisibility(View.GONE);
         findButton = (Button) findViewById(R.id.findpartner);
         findButton.setEnabled(true);
-        exerciseButton=(Button) findViewById(R.id.exercise );
+        exerciseButton = (Button) findViewById(R.id.exercise);
         exerciseButton.setVisibility(View.GONE);
-        test = (TextView)findViewById(R.id.Text);
+        test = (TextView) findViewById(R.id.Text);
         test.setText("No schedule have been made.");
-        hurray=(TextView)findViewById(R.id.hurray);
+        hurray = (TextView) findViewById(R.id.hurray);
         hurray.setVisibility(View.GONE);
         //get Database Instance
         mInstance = FirebaseDatabase.getInstance();
@@ -80,7 +82,7 @@ public class MainMenu extends AppCompatActivity
         UsersRef = mInstance.getReference("Users");
         //Text view to edit
         uid = FirebaseAuth.getInstance().getUid();
-        welcome = (TextView)findViewById(R.id.usernameText);
+        welcome = (TextView) findViewById(R.id.usernameText);
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         auth = FirebaseAuth.getInstance();
@@ -94,24 +96,23 @@ public class MainMenu extends AppCompatActivity
             }
         });
 
-      //  final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        //  final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         //Show Welcome text in main menu
         UsersRef.child(uid).addValueEventListener(new ValueEventListener() {
-                @Override
+            @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                    if(dataSnapshot.exists()) {
-                        User user = dataSnapshot.getValue(User.class);
-                        userUsername = user.username;
-                        if(userUsername == null){
-
-                        }else {
-                            welcome.setText(user.username);
-                        }
+                if (dataSnapshot.exists()) {
+                    User user = dataSnapshot.getValue(User.class);
+                    userUsername = user.username;
+                    if (userUsername == null) {
+                    } else {
+                        welcome.setText(user.username);
                     }
-                    else {
+                } else {
 
-                    }
+                }
             }
+
             @Override
             public void onCancelled(DatabaseError error) {
                 // Failed to read value
@@ -140,26 +141,65 @@ public class MainMenu extends AppCompatActivity
         //Collect logged in user's allDate,allLocation, and allSport
 
 
-            mInstance.getReference("Schedules").child(uid).addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    if(dataSnapshot.exists()) {
-                        Schedule schedule = dataSnapshot.getValue(Schedule.class);
-                        userDate = schedule.date;
-                        userLocation = schedule.location;
-                        userSport = schedule.sport;
-                    }
-                    else {
-                        test.setText("data failed to get");
-                    }
+        mInstance.getReference("Schedules").child(uid).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    Schedule schedule = dataSnapshot.getValue(Schedule.class);
+                    userDate = schedule.date;
+                    userLocation = schedule.location;
+                    userSport = schedule.sport;
+                } else {
+                    test.setText("data failed to get");
                 }
+            }
 
-                @Override
-                public void onCancelled(DatabaseError error) {
-                    // Failed to read value
-                    Log.w(TAG, "Failed to read value.", error.toException());
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                Log.w(TAG, "Failed to read value.", error.toException());
+            }
+        });
+        ////////////////////////////////////////////////////
+        UsersRef.child(uid).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    PartnerCheck partnerCheck = dataSnapshot.getValue(PartnerCheck.class);
+                    inPartner = partnerCheck.inPartner;
+                    if (inPartner == null) {
+                    } else {
+                    }
+                } else {
+
                 }
-            });
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                Log.w(TAG, "Failed to read value.", error.toException());
+            }
+        });
+        /////////////////////////////
+        UsersRef.child(uid).child("partner").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    Partner partner = dataSnapshot.getValue(Partner.class);
+                    partnerUsername = partner.userP;
+                    partnerDate = partner.dateP;
+                } else {
+
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                Log.w(TAG, "Failed to read value.", error.toException());
+            }
+        });
 
 //TODO untuk match data berhasil hanya kalau jumlah USER == JUMLAH SCHEDULE (??)
 
@@ -168,13 +208,16 @@ public class MainMenu extends AppCompatActivity
                         new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
-                                if(dataSnapshot.exists()){
-                                collectImage((Map<String,Object>) dataSnapshot.getValue());
-                                collectUsername((Map<String, Object>) dataSnapshot.getValue());
-                                collectWA((Map<String, Object>) dataSnapshot.getValue());
-                                collectPhone((Map<String, Object>) dataSnapshot.getValue());
+                                if (dataSnapshot.exists()) {
+                                    collectImage((Map<String, Object>) dataSnapshot.getValue());
+                                    collectUsername((Map<String, Object>) dataSnapshot.getValue());
+                                    collectWA((Map<String, Object>) dataSnapshot.getValue());
+                                    collectPhone((Map<String, Object>) dataSnapshot.getValue());
+                                    collectinPartner((Map<String, Object >) dataSnapshot.getValue());
+                                    dataSnapshot.getValue();
+                                }
                             }
-                            }
+
                             @Override
                             public void onCancelled(DatabaseError databaseError) {
                                 Log.w(TAG, "Failed to read value.");
@@ -186,75 +229,134 @@ public class MainMenu extends AppCompatActivity
                         new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
-                                if (dataSnapshot.child(uid).exists()){ //in case user haven't made a schedule
+                                if (dataSnapshot.child(uid).exists()) { //in case user haven't made a schedule
                                     //Get map of users in datasnapshot
-                                 collectDate((Map<String, Object>) dataSnapshot.getValue());
-                                collectLocation((Map<String, Object>) dataSnapshot.getValue());
-                                collectSport((Map<String, Object>) dataSnapshot.getValue());
-                                //DELETE LOGGED IN USER'S DATAS IN THE ARRAY
-                                allDate.remove(userDate);
-                                allLocation.remove(userLocation);
-                                allSport.remove(userSport);
-                                allUsername.remove(userUsername);
-                                //test.setText("No match found yet...");
-            if (userDate!="0"){
-                                //COMPARE USER'S SCHEDULE VALUES TO ALL EXISTING SCHEDULE
-                                for (i = 0; i < allDate.size(); i++) {
-                                    if (userDate.equals(allDate.get(i)) && userSport.equals(allSport.get(i)) && userLocation.equals(allLocation.get(i)) && date.equals(userDate)) { //MATCH SAAT SUDAH TANGGALNYA
-                                        exerciseButton.setVisibility(View.VISIBLE);
-                                        hurray.setVisibility(View.VISIBLE);
-                                        hurray.setText("Hurray! We've found you partner for " + allDate.get(i));
-                                        test.setText("Your partner is  " + allUsername.get(i) +"!");
-                                        UsersRef.child(uid).child("partner").child("userP").setValue(allUsername.get(i));
-                                        UsersRef.child(uid).child("partner").child("sportP").setValue(allSport.get(i));
-                                        UsersRef.child(uid).child("partner").child("locationP").setValue(allLocation.get(i));
-                                        UsersRef.child(uid).child("partner").child("dateP").setValue(allDate.get(i));
-                                        UsersRef.child(uid).child("partner").child("linkwaP").setValue(allWA.get(i));
-                                        UsersRef.child(uid).child("partner").child("phoneP").setValue(allPhone.get(i));
-                                        UsersRef.child(uid).child("partner").child("imageP").setValue(allImage.get(i));
-                                       // Log.w(TAG, allImage.get(i));
-                                        findButton.setVisibility(View.GONE);
-                                        changeSchedule.setVisibility(View.VISIBLE);
-                                        changeSchedule.setEnabled(false);
-                                        changeSchedule.setBackgroundResource(R.drawable.disabled_button);
-                                        i=0;
-                                        break;
+                                    collectDate((Map<String, Object>) dataSnapshot.getValue());
+                                    collectLocation((Map<String, Object>) dataSnapshot.getValue());
+                                    collectSport((Map<String, Object>) dataSnapshot.getValue());
+                                    //DELETE LOGGED IN USER'S DATAS IN THE ARRAY
+                                   // allDate.remove(userDate);
+                                    //allLocation.remove(userLocation);
+                                    //allSport.remove(userSport);
+                                    //allUsername.remove(userUsername);
+                                    //allinPartner.remove(inPartner);
 
-                                    } else if(userDate.equals(allDate.get(i)) && userSport.equals(allSport.get(i)) && userLocation.equals(allLocation.get(i))) { //MATCH TAPI BELUM TANGGALNYA
-                                        hurray.setVisibility(View.VISIBLE);
-                                        hurray.setText("Hurray! We've found you partner for the date : " + allDate.get(i));
-                                        test.setText("Your partner is  " + allUsername.get(i) +"!");
-                                        findButton.setVisibility(View.GONE);
-                                        changeSchedule.setVisibility(View.VISIBLE);
-                                        //test.setText(Arrays.toString(allUsername.toArray()));
-                                        UsersRef.child(uid).child("partner").child("userP").setValue(allUsername.get(i));
-                                        UsersRef.child(uid).child("partner").child("sportP").setValue(allSport.get(i));
-                                        UsersRef.child(uid).child("partner").child("locationP").setValue(allLocation.get(i));
-                                        UsersRef.child(uid).child("partner").child("dateP").setValue(allDate.get(i));
-                                        UsersRef.child(uid).child("partner").child("linkwaP").setValue(allWA.get(i));
-                                        UsersRef.child(uid).child("partner").child("phoneP").setValue(allPhone.get(i));
-                                        UsersRef.child(uid).child("partner").child("imageP").setValue(allImage.get(i));
-                                        //Log.w(TAG, allImage.get(i));
-                                        i=0; //reset i
-                                        break;
+
+                                    //test.setText("No match found yet...");
+
+                                    //COMPARE USER'S SCHEDULE VALUES TO ALL EXISTING SCHEDULE
+                                    for (i = 0; i < allDate.size(); i++) {
+                                 /*   if (("1").equals(allinPartner.get(i))){
+                                        Toast.makeText(getApplicationContext(), "TOLOL"+i, Toast.LENGTH_SHORT).show();}*/
+
+                                        //CASE 1 --> flag 0 (baru masuk), belum mendapatkan partner
+                                        if (inPartner.equals("0") && !userDate.equals("0") && userDate.equals(allDate.get(i)) && userSport.equals(allSport.get(i)) && userLocation.equals(allLocation.get(i)) && date.equals(userDate)&&!userUsername.equals(allUsername.get(i))) { //MATCH SAAT SUDAH TANGGALNYA
+                                            exerciseButton.setVisibility(View.VISIBLE);
+                                            hurray.setVisibility(View.VISIBLE);
+                                            hurray.setText("Hurray! We've found you partner for " + allDate.get(i));
+                                            test.setText("(CASE 1) Your partner is  " + allUsername.get(i) + "!");
+                                            UsersRef.child(uid).child("inPartner").setValue("1");
+                                            UsersRef.child(uid).child("partner").child("userP").setValue(allUsername.get(i));
+                                            UsersRef.child(uid).child("partner").child("sportP").setValue(allSport.get(i));
+                                            UsersRef.child(uid).child("partner").child("locationP").setValue(allLocation.get(i));
+                                            UsersRef.child(uid).child("partner").child("dateP").setValue(allDate.get(i));
+                                            UsersRef.child(uid).child("partner").child("linkwaP").setValue(allWA.get(i));
+                                            UsersRef.child(uid).child("partner").child("phoneP").setValue(allPhone.get(i));
+                                            UsersRef.child(uid).child("partner").child("imageP").setValue(allImage.get(i));
+                                            // Log.w(TAG, allImage.get(i));
+                                            findButton.setVisibility(View.GONE);
+                                            changeSchedule.setVisibility(View.VISIBLE);
+                                            changeSchedule.setEnabled(false);
+                                            changeSchedule.setBackgroundResource(R.drawable.disabled_button);
+                                            i = 0;
+                                            Toast.makeText(getApplicationContext(), "CASE 1", Toast.LENGTH_SHORT).show();
+                                            if (inPartner.equals("1")) {
+                                                findButton.setVisibility(View.GONE);
+                                                changeSchedule.setVisibility(View.VISIBLE);
+                                                changeSchedule.setEnabled(false);
+                                                changeSchedule.setBackgroundResource(R.drawable.disabled_button);
+                                                exerciseButton.setVisibility(View.VISIBLE);
+                                            }
+
+                                            break;
+                                        }
+
+
+                                        if (inPartner.equals("1") && !userDate.equals("0") && userDate.equals(allDate.get(i)) && userSport.equals(allSport.get(i)) && userLocation.equals(allLocation.get(i)) && date.equals(userDate)&&!userUsername.equals(allUsername.get(i))) {
+                                            exerciseButton.setVisibility(View.VISIBLE);
+                                            hurray.setVisibility(View.VISIBLE);
+                                            hurray.setText("Hurray! We've found you partner for " + allDate.get(i));
+                                            test.setText("(CASE 1) Your partner is  " + allUsername.get(i) + "!");
+                                            UsersRef.child(uid).child("inPartner").setValue("1");
+                                            UsersRef.child(uid).child("partner").child("userP").setValue(allUsername.get(i));
+                                            UsersRef.child(uid).child("partner").child("sportP").setValue(allSport.get(i));
+                                            UsersRef.child(uid).child("partner").child("locationP").setValue(allLocation.get(i));
+                                            UsersRef.child(uid).child("partner").child("dateP").setValue(allDate.get(i));
+                                            UsersRef.child(uid).child("partner").child("linkwaP").setValue(allWA.get(i));
+                                            UsersRef.child(uid).child("partner").child("phoneP").setValue(allPhone.get(i));
+                                            UsersRef.child(uid).child("partner").child("imageP").setValue(allImage.get(i));
+                                            // Log.w(TAG, allImage.get(i));
+                                            findButton.setVisibility(View.GONE);
+                                            changeSchedule.setVisibility(View.VISIBLE);
+                                            changeSchedule.setEnabled(false);
+                                            changeSchedule.setBackgroundResource(R.drawable.disabled_button);
+                                            i = 0;
+                                            Toast.makeText(getApplicationContext(), "CASE 1", Toast.LENGTH_SHORT).show();
+
+                                            break;
+                                        }
+
+
+                                        // CASE 2--> sudah match tapi tanggal belm
+                                        else if (inPartner.equals("1") && !userDate.equals("0") && userDate.equals(allDate.get(i)) && userSport.equals(allSport.get(i)) && userLocation.equals(allLocation.get(i))&&!userUsername.equals(allUsername.get(i))) { //MATCH TAPI BELUM TANGGALNYA
+                                            hurray.setVisibility(View.VISIBLE);
+                                            hurray.setText("Hurray! We've found you partner for the date : " + allDate.get(i));
+                                            test.setText("(CASE 2) Your partner is  " + allUsername.get(i) + "!");
+                                            findButton.setVisibility(View.GONE);
+                                            changeSchedule.setVisibility(View.VISIBLE);
+                                            UsersRef.child(uid).child("inPartner").setValue("1");
+                                            //test.setText(Arrays.toString(allUsername.toArray()));
+                                            UsersRef.child(uid).child("partner").child("userP").setValue(allUsername.get(i));
+                                            UsersRef.child(uid).child("partner").child("sportP").setValue(allSport.get(i));
+                                            UsersRef.child(uid).child("partner").child("locationP").setValue(allLocation.get(i));
+                                            UsersRef.child(uid).child("partner").child("dateP").setValue(allDate.get(i));
+                                            UsersRef.child(uid).child("partner").child("linkwaP").setValue(allWA.get(i));
+                                            UsersRef.child(uid).child("partner").child("phoneP").setValue(allPhone.get(i));
+                                            UsersRef.child(uid).child("partner").child("imageP").setValue(allImage.get(i));
+                                            //Log.w(TAG, allImage.get(i));
+                                            i = 0; //reset i
+                                            break;
+
+                                        }
+                                        // CASE 3 . salah satu sudah memberikan review
+                                        else if (inPartner.equals("1")) {
+                                            exerciseButton.setVisibility(View.VISIBLE);
+                                            hurray.setVisibility(View.VISIBLE);
+                                            hurray.setText("Hurray! We've found you partner for " + partnerDate);
+                                            test.setText("(CASE 3)Your partner is" + partnerUsername + "!");
+                                            i = 0;
+                                            break;
+                                        }
+                                        if (!userDate.equals("0")) {
+                                            hurray.setVisibility(View.GONE);
+                                            findButton.setVisibility(View.GONE);
+                                            changeSchedule.setVisibility(View.VISIBLE);
+                                            test.setText("No match found yet...");
+                                        }
+
                                     }
-                                    hurray.setVisibility(View.GONE);
-                                    findButton.setVisibility(View.GONE);
-                                    changeSchedule.setVisibility(View.VISIBLE);
-                                    test.setText("No match found yet...");
-
-                                }}
-                            } else{
+                                } else {
                                     test.setText("No schedule have been made.");
+                                    UsersRef.child(uid).child("inPartner").setValue("0");
                                 }
-                                i=0;
-                        }
+                                i = 0;
+                            }
+
                             @Override
                             public void onCancelled(DatabaseError databaseError) {
                                 Log.w(TAG, "Failed to read value.");
                             }
                         });
-
 
 
         authListener = new FirebaseAuth.AuthStateListener() {
@@ -266,18 +368,20 @@ public class MainMenu extends AppCompatActivity
                     // launch login activity
                     startActivity(new Intent(MainMenu.this, LoginScreen.class));
                     finish();
-                }}};
+                }
+            }
+        };
 
-        findButton.setOnClickListener(new View.OnClickListener(){
+        findButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v){
+            public void onClick(View v) {
                 startActivity(new Intent(MainMenu.this, CreateSchedule.class));
             }
 
         });
-        changeSchedule.setOnClickListener(new View.OnClickListener(){
+        changeSchedule.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v){
+            public void onClick(View v) {
                 startActivity(new Intent(MainMenu.this, CreateSchedule.class));
             }
 
@@ -352,9 +456,11 @@ public class MainMenu extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-    public void signOut(){
+
+    public void signOut() {
         auth.signOut();
     }
+
     @Override
     public void onStart() {
         super.onStart();
@@ -369,12 +475,11 @@ public class MainMenu extends AppCompatActivity
         }
     }
 
-    public void collectDate (Map<String,Object> users) { //COLLECT ALL DATES
-
+    public void collectDate(Map<String, Object> users) { //COLLECT ALL DATES
 
 
         //iterate through each user, ignoring their UID
-        for (Map.Entry<String, Object> entry : users.entrySet()){
+        for (Map.Entry<String, Object> entry : users.entrySet()) {
 
             //Get user map
             Map singleUser = (Map) entry.getValue();
@@ -384,12 +489,12 @@ public class MainMenu extends AppCompatActivity
 
 
     }
-    public void collectSport (Map<String,Object> users) { //COLLECT ALL SPORTS
 
+    public void collectSport(Map<String, Object> users) { //COLLECT ALL SPORTS
 
 
         //iterate through each user, ignoring their UID
-        for (Map.Entry<String, Object> entry : users.entrySet()){
+        for (Map.Entry<String, Object> entry : users.entrySet()) {
 
             //Get user map
             Map singleUser = (Map) entry.getValue();
@@ -400,12 +505,12 @@ public class MainMenu extends AppCompatActivity
 
 
     }
-    public void collectLocation (Map<String,Object> users) {
 
+    public void collectLocation(Map<String, Object> users) {
 
 
         //iterate through each user, ignoring their UID
-        for (Map.Entry<String, Object> entry : users.entrySet()){
+        for (Map.Entry<String, Object> entry : users.entrySet()) {
 
             //Get user map
             Map singleUser = (Map) entry.getValue();
@@ -415,12 +520,12 @@ public class MainMenu extends AppCompatActivity
 
 
     }
-    public void collectUsername (Map<String,Object> users) {
 
+    public void collectUsername(Map<String, Object> users) {
 
 
         //iterate through each user, ignoring their UID
-        for (Map.Entry<String, Object> entry : users.entrySet()){
+        for (Map.Entry<String, Object> entry : users.entrySet()) {
 
             //Get user map
             Map singleUser = (Map) entry.getValue();
@@ -430,12 +535,12 @@ public class MainMenu extends AppCompatActivity
         //Arrays.toString(allUsername.toArray());
 
     }
-    public void collectWA (Map<String,Object> users) {
 
+    public void collectWA(Map<String, Object> users) {
 
 
         //iterate through each user, ignoring their UID
-        for (Map.Entry<String, Object> entry : users.entrySet()){
+        for (Map.Entry<String, Object> entry : users.entrySet()) {
 
             //Get user map
             Map singleUser = (Map) entry.getValue();
@@ -445,12 +550,12 @@ public class MainMenu extends AppCompatActivity
         //Arrays.toString(allUsername.toArray());
 
     }
-    public void collectPhone (Map<String,Object> users) {
 
+    public void collectPhone(Map<String, Object> users) {
 
 
         //iterate through each user, ignoring their UID
-        for (Map.Entry<String, Object> entry : users.entrySet()){
+        for (Map.Entry<String, Object> entry : users.entrySet()) {
 
             //Get user map
             Map singleUser = (Map) entry.getValue();
@@ -460,24 +565,43 @@ public class MainMenu extends AppCompatActivity
         //Arrays.toString(allUsername.toArray());
 
     }
-    public void collectImage (Map<String,Object> users) {
 
+    public void collectImage(Map<String, Object> users) {
 
 
         //iterate through each user, ignoring their UID
-        for (Map.Entry<String, Object> entry : users.entrySet()){
+        for (Map.Entry<String, Object> entry : users.entrySet()) {
 
             //Get user map
             Map singleUser = (Map) entry.getValue();
             //Get phone field and append to list
-            if(singleUser.get("imageurl") == null){
+            if (singleUser.get("imageurl") == null) {
                 allImage.add("nopic");
             }
-                allImage.add((String) singleUser.get("imageurl"));
+            allImage.add((String) singleUser.get("imageurl"));
 
 
         }
+
+
         //Arrays.toString(allUsername.toArray());
+
+    }
+
+    public void collectinPartner(Map<String, Object> users) {
+
+
+        //iterate through each user, ignoring their UID
+        for (Map.Entry<String, Object> entry : users.entrySet()) {
+
+            //Get user map
+            Map singleUser = (Map) entry.getValue();
+            if (singleUser.get("inPartner") == null) {
+            }
+            allinPartner.add((String) singleUser.get("inPartner"));
+
+
+        }
 
     }
 }
