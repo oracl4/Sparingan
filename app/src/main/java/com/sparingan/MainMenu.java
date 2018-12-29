@@ -47,7 +47,7 @@ public class MainMenu extends AppCompatActivity
     private String uid;
     private FirebaseDatabase mInstance;
     private DatabaseReference UsersRef;
-    private String userDate, userLocation, userSport, userUsername, inPartner;
+    private String userDate, userLocation, userSport, userUsername, inPartner,userLinkwa,userImage,userPhone;
     private String partnerDate, partnerLocation, partnerSport, partnerUsername;
     private ArrayList<String> allImage = new ArrayList<>();
     private ArrayList<String> allLocation = new ArrayList<>();
@@ -57,6 +57,7 @@ public class MainMenu extends AppCompatActivity
     private ArrayList<String> allWA = new ArrayList<>();
     private ArrayList<String> allPhone = new ArrayList<>();
     private ArrayList<String> allinPartner = new ArrayList<>();
+    private ArrayList<String> alluid = new ArrayList<>();
     private static final String TAG = MainMenu.class.getSimpleName();
     private Map<String, Object> partner;
 
@@ -104,6 +105,10 @@ public class MainMenu extends AppCompatActivity
                 if (dataSnapshot.exists()) {
                     User user = dataSnapshot.getValue(User.class);
                     userUsername = user.username;
+                    userPhone= user.phone;
+                    userLinkwa=user.linkwa;
+                    userImage=user.imageurl;
+
                     if (userUsername == null) {
                     } else {
                         welcome.setText(user.username);
@@ -214,6 +219,7 @@ public class MainMenu extends AppCompatActivity
                                     collectWA((Map<String, Object>) dataSnapshot.getValue());
                                     collectPhone((Map<String, Object>) dataSnapshot.getValue());
                                     collectinPartner((Map<String, Object >) dataSnapshot.getValue());
+                                    collectuid((Map<String, Object >) dataSnapshot.getValue());
                                     dataSnapshot.getValue();
                                 }
                             }
@@ -234,27 +240,16 @@ public class MainMenu extends AppCompatActivity
                                     collectDate((Map<String, Object>) dataSnapshot.getValue());
                                     collectLocation((Map<String, Object>) dataSnapshot.getValue());
                                     collectSport((Map<String, Object>) dataSnapshot.getValue());
-                                    //DELETE LOGGED IN USER'S DATAS IN THE ARRAY
-                                   // allDate.remove(userDate);
-                                    //allLocation.remove(userLocation);
-                                    //allSport.remove(userSport);
-                                    //allUsername.remove(userUsername);
-                                    //allinPartner.remove(inPartner);
-
-
-                                    //test.setText("No match found yet...");
-
                                     //COMPARE USER'S SCHEDULE VALUES TO ALL EXISTING SCHEDULE
                                     for (i = 0; i < allDate.size(); i++) {
-                                 /*   if (("1").equals(allinPartner.get(i))){
-                                        Toast.makeText(getApplicationContext(), "TOLOL"+i, Toast.LENGTH_SHORT).show();}*/
 
                                         //CASE 1 --> flag 0 (baru masuk), belum mendapatkan partner
-                                        if (inPartner.equals("0") && !userDate.equals("0") && userDate.equals(allDate.get(i)) && userSport.equals(allSport.get(i)) && userLocation.equals(allLocation.get(i)) && date.equals(userDate)&&!userUsername.equals(allUsername.get(i))) { //MATCH SAAT SUDAH TANGGALNYA
+                                        if (inPartner.equals("0") && !userDate.equals("0") && userDate.equals(allDate.get(i)) && userSport.equals(allSport.get(i)) && userLocation.equals(allLocation.get(i)) &&!userUsername.equals(allUsername.get(i))&("0").equals(allinPartner.get(i))) { //MATCH SAAT SUDAH TANGGALNYA
                                             exerciseButton.setVisibility(View.VISIBLE);
                                             hurray.setVisibility(View.VISIBLE);
                                             hurray.setText("Hurray! We've found you partner for " + allDate.get(i));
-                                            test.setText("(CASE 1) Your partner is  " + allUsername.get(i) + "!");
+                                            test.setText("(CASE 1a) Your partner is  " + allUsername.get(i) + "!");
+                                            // taruh pada child user
                                             UsersRef.child(uid).child("inPartner").setValue("1");
                                             UsersRef.child(uid).child("partner").child("userP").setValue(allUsername.get(i));
                                             UsersRef.child(uid).child("partner").child("sportP").setValue(allSport.get(i));
@@ -263,81 +258,32 @@ public class MainMenu extends AppCompatActivity
                                             UsersRef.child(uid).child("partner").child("linkwaP").setValue(allWA.get(i));
                                             UsersRef.child(uid).child("partner").child("phoneP").setValue(allPhone.get(i));
                                             UsersRef.child(uid).child("partner").child("imageP").setValue(allImage.get(i));
-                                            // Log.w(TAG, allImage.get(i));
+                                            //taruh pada child partner
+                                            UsersRef.child(alluid.get(i)).child("inPartner").setValue("2");
+                                            UsersRef.child(alluid.get(i)).child("partner").child("userP").setValue(userUsername);
+                                            UsersRef.child(alluid.get(i)).child("partner").child("sportP").setValue(userSport);
+                                            UsersRef.child(alluid.get(i)).child("partner").child("locationP").setValue(userLocation);
+                                            UsersRef.child(alluid.get(i)).child("partner").child("dateP").setValue(userDate);
+                                            UsersRef.child(alluid.get(i)).child("partner").child("linkwaP").setValue(userLinkwa);
+                                            UsersRef.child(alluid.get(i)).child("partner").child("phoneP").setValue(userPhone);
+                                            UsersRef.child(alluid.get(i)).child("partner").child("imageP").setValue(userImage);
+                                            i = 0;
                                             findButton.setVisibility(View.GONE);
                                             changeSchedule.setVisibility(View.VISIBLE);
                                             changeSchedule.setEnabled(false);
                                             changeSchedule.setBackgroundResource(R.drawable.disabled_button);
-                                            i = 0;
-                                            Toast.makeText(getApplicationContext(), "CASE 1", Toast.LENGTH_SHORT).show();
-                                            if (inPartner.equals("1")) {
-                                                findButton.setVisibility(View.GONE);
-                                                changeSchedule.setVisibility(View.VISIBLE);
-                                                changeSchedule.setEnabled(false);
-                                                changeSchedule.setBackgroundResource(R.drawable.disabled_button);
-                                                exerciseButton.setVisibility(View.VISIBLE);
-                                            }
-
-                                            break;
-                                        }
-
-
-                                        if (inPartner.equals("1") && !userDate.equals("0") && userDate.equals(allDate.get(i)) && userSport.equals(allSport.get(i)) && userLocation.equals(allLocation.get(i)) && date.equals(userDate)&&!userUsername.equals(allUsername.get(i))) {
                                             exerciseButton.setVisibility(View.VISIBLE);
-                                            hurray.setVisibility(View.VISIBLE);
-                                            hurray.setText("Hurray! We've found you partner for " + allDate.get(i));
-                                            test.setText("(CASE 1) Your partner is  " + allUsername.get(i) + "!");
-                                            UsersRef.child(uid).child("inPartner").setValue("1");
-                                            UsersRef.child(uid).child("partner").child("userP").setValue(allUsername.get(i));
-                                            UsersRef.child(uid).child("partner").child("sportP").setValue(allSport.get(i));
-                                            UsersRef.child(uid).child("partner").child("locationP").setValue(allLocation.get(i));
-                                            UsersRef.child(uid).child("partner").child("dateP").setValue(allDate.get(i));
-                                            UsersRef.child(uid).child("partner").child("linkwaP").setValue(allWA.get(i));
-                                            UsersRef.child(uid).child("partner").child("phoneP").setValue(allPhone.get(i));
-                                            UsersRef.child(uid).child("partner").child("imageP").setValue(allImage.get(i));
-                                            // Log.w(TAG, allImage.get(i));
-                                            findButton.setVisibility(View.GONE);
-                                            changeSchedule.setVisibility(View.VISIBLE);
-                                            changeSchedule.setEnabled(false);
-                                            changeSchedule.setBackgroundResource(R.drawable.disabled_button);
-                                            i = 0;
-                                            Toast.makeText(getApplicationContext(), "CASE 1", Toast.LENGTH_SHORT).show();
-
                                             break;
                                         }
-
-
-                                        // CASE 2--> sudah match tapi tanggal belm
-                                        else if (inPartner.equals("1") && !userDate.equals("0") && userDate.equals(allDate.get(i)) && userSport.equals(allSport.get(i)) && userLocation.equals(allLocation.get(i))&&!userUsername.equals(allUsername.get(i))) { //MATCH TAPI BELUM TANGGALNYA
-                                            hurray.setVisibility(View.VISIBLE);
-                                            hurray.setText("Hurray! We've found you partner for the date : " + allDate.get(i));
-                                            test.setText("(CASE 2) Your partner is  " + allUsername.get(i) + "!");
-                                            findButton.setVisibility(View.GONE);
-                                            changeSchedule.setVisibility(View.VISIBLE);
-                                            UsersRef.child(uid).child("inPartner").setValue("1");
-                                            //test.setText(Arrays.toString(allUsername.toArray()));
-                                            UsersRef.child(uid).child("partner").child("userP").setValue(allUsername.get(i));
-                                            UsersRef.child(uid).child("partner").child("sportP").setValue(allSport.get(i));
-                                            UsersRef.child(uid).child("partner").child("locationP").setValue(allLocation.get(i));
-                                            UsersRef.child(uid).child("partner").child("dateP").setValue(allDate.get(i));
-                                            UsersRef.child(uid).child("partner").child("linkwaP").setValue(allWA.get(i));
-                                            UsersRef.child(uid).child("partner").child("phoneP").setValue(allPhone.get(i));
-                                            UsersRef.child(uid).child("partner").child("imageP").setValue(allImage.get(i));
-                                            //Log.w(TAG, allImage.get(i));
-                                            i = 0; //reset i
-                                            break;
-
-                                        }
-                                        // CASE 3 . salah satu sudah memberikan review
-                                        else if (inPartner.equals("1")) {
-                                            exerciseButton.setVisibility(View.VISIBLE);
+                                        if(inPartner.equals("2")){
                                             hurray.setVisibility(View.VISIBLE);
                                             hurray.setText("Hurray! We've found you partner for " + partnerDate);
-                                            test.setText("(CASE 3)Your partner is" + partnerUsername + "!");
-                                            i = 0;
-                                            break;
+                                            test.setText("(CASE 1a) Your partner is  " + partnerUsername + "!");
+                                            exerciseButton.setVisibility(View.VISIBLE);
+                                            findButton.setVisibility(View.GONE
+                                            );
                                         }
-                                        if (!userDate.equals("0")) {
+                                        else if (!userDate.equals("0")) {
                                             hurray.setVisibility(View.GONE);
                                             findButton.setVisibility(View.GONE);
                                             changeSchedule.setVisibility(View.VISIBLE);
@@ -347,7 +293,7 @@ public class MainMenu extends AppCompatActivity
                                     }
                                 } else {
                                     test.setText("No schedule have been made.");
-                                    UsersRef.child(uid).child("inPartner").setValue("0");
+                                    //UsersRef.child(uid).child("inPartner").setValue("0");
                                 }
                                 i = 0;
                             }
@@ -599,6 +545,24 @@ public class MainMenu extends AppCompatActivity
             if (singleUser.get("inPartner") == null) {
             }
             allinPartner.add((String) singleUser.get("inPartner"));
+
+
+        }
+
+    }
+
+
+    public void collectuid(Map<String, Object> users) {
+
+
+        //iterate through each user, ignoring their UID
+        for (Map.Entry<String, Object> entry : users.entrySet()) {
+
+            //Get user map
+            Map singleUser = (Map) entry.getValue();
+            if (singleUser.get("uid") == null) {
+            }
+            alluid.add((String) singleUser.get("uid"));
 
 
         }
