@@ -133,7 +133,7 @@ private static final String TAG = Rating.class.getSimpleName();
             String sport = "0";
             String location = "0";
             String dateString = "0";
-
+            UsersRef.child(uid).child("inPartner").setValue("0");
             Schedule schedule = new Schedule(sport,location,dateString);
             FirebaseDatabase.getInstance().getReference("Schedules").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(schedule).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override

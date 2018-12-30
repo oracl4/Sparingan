@@ -106,6 +106,8 @@ public class RegisterScreen extends AppCompatActivity {
                                            //Text view to edit
                                            uid = FirebaseAuth.getInstance().getUid();
                                            UsersRef.child(uid).child("inPartner").setValue("0");
+                                           UsersRef.child(uid).child("uid").setValue(uid);
+                                           UsersRef.child(uid).child("imageurl").setValue("nopic");
 
                                            Schedule schedule = new Schedule(sport,location,dateString);
                                            FirebaseDatabase.getInstance().getReference("Schedules").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(schedule).addOnCompleteListener(new OnCompleteListener<Void>() {
