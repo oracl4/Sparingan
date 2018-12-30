@@ -24,7 +24,7 @@ public class Exercise extends AppCompatActivity {
 private Button finish;
 private TextView partnerInfo;
 private ImageView partnerpic;
-private ImageButton whatsappbtn;
+private Button whatsappbtn;
 private FirebaseDatabase mInstance;
 private DatabaseReference UsersRef;
 private String partnerSport,partnerDate, partnerWA, partnerLocation,partnerName,partnerPhone;
@@ -48,7 +48,7 @@ private static final String TAG = Exercise.class.getSimpleName();
         Log.w(TAG,uid);
         //partnerInfo.setText(auth.getUid());
         //INIT xml objects
-        whatsappbtn = (ImageButton)findViewById(R.id.whatsappB);
+        whatsappbtn = (Button)findViewById(R.id.whatsappB);
         finish = (Button) findViewById(R.id.finish);
         partnerInfo = (TextView) findViewById(R.id.userinfo);
         partnerpic = (ImageView)findViewById(R.id.partnerpic);
