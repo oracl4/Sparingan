@@ -248,7 +248,7 @@ public class MainMenu extends AppCompatActivity
                                             exerciseButton.setVisibility(View.VISIBLE);
                                             hurray.setVisibility(View.VISIBLE);
                                             hurray.setText("Hurray! We've found you partner for " + allDate.get(i));
-                                            test.setText("(CASE 1a) Your partner is  " + allUsername.get(i) + "!");
+                                            test.setText("Your partner is  " + allUsername.get(i) + "!");
                                             // taruh pada child user
                                             UsersRef.child(uid).child("inPartner").setValue("1");
                                             UsersRef.child(uid).child("partner").child("userP").setValue(allUsername.get(i));
@@ -269,25 +269,31 @@ public class MainMenu extends AppCompatActivity
                                             UsersRef.child(alluid.get(i)).child("partner").child("imageP").setValue(userImage);
                                             i = 0;
                                             findButton.setVisibility(View.GONE);
-                                            changeSchedule.setVisibility(View.VISIBLE);
-                                            changeSchedule.setEnabled(false);
-                                            changeSchedule.setBackgroundResource(R.drawable.disabled_button);
                                             exerciseButton.setVisibility(View.VISIBLE);
+                                            break;
+                                        }
+                                        if (inPartner.equals("1")){
+                                            hurray.setVisibility(View.VISIBLE);
+                                            hurray.setText("Hurray! We've found you partner for " + partnerDate);
+                                            test.setText("Your partner is  " + partnerUsername + "!");
+                                            findButton.setVisibility(View.GONE);
+                                            exerciseButton.setVisibility(View.VISIBLE);
+                                            i=0;
                                             break;
                                         }
                                         if(inPartner.equals("2")){
                                             hurray.setVisibility(View.VISIBLE);
                                             hurray.setText("Hurray! We've found you partner for " + partnerDate);
-                                            test.setText("(CASE 1a) Your partner is  " + partnerUsername + "!");
+                                            test.setText("Your partner is  " + partnerUsername + "!");
+                                            findButton.setVisibility(View.GONE);
                                             exerciseButton.setVisibility(View.VISIBLE);
-                                            findButton.setVisibility(View.GONE
-                                            );
+
                                         }
                                         else if (!userDate.equals("0")) {
                                             hurray.setVisibility(View.GONE);
                                             findButton.setVisibility(View.GONE);
                                             changeSchedule.setVisibility(View.VISIBLE);
-                                            test.setText("No match found yet...");
+                                            test.setText("No match found for "+userDate);
                                         }
 
                                     }
