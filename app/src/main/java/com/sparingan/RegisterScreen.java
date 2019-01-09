@@ -106,6 +106,7 @@ public class RegisterScreen extends AppCompatActivity {
                                            //Text view to edit
                                            uid = FirebaseAuth.getInstance().getUid();
                                            UsersRef.child(uid).child("inPartner").setValue("0");
+                                           UsersRef.child(uid).child("gabungan").setValue("0"+"_"+"0"+"_"+"0"+"_"+"0");
                                            UsersRef.child(uid).child("uid").setValue(uid);
                                            UsersRef.child(uid).child("imageurl").setValue("nopic");
 

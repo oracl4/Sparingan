@@ -6,6 +6,7 @@ import android.os.Bundle;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseUser;
 
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
@@ -20,12 +21,10 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ValueEventListener;
 
@@ -39,10 +38,11 @@ import java.util.Map;
 public class MainMenu extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     int i = 0;
-    private FirebaseAuth auth;
+
+      private FirebaseAuth auth;
     private FirebaseAuth.AuthStateListener authListener;
     private Button findButton;
-    private Button exerciseButton, changeSchedule;
+    private Button exerciseButton, changeSchedule,pickPartner;
     private TextView welcome, test, hurray;
     private String uid;
     private FirebaseDatabase mInstance;
@@ -62,8 +62,15 @@ public class MainMenu extends AppCompatActivity
     private Map<String, Object> partner;
 
 
+
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
         changeSchedule = (Button) findViewById(R.id.changeschedule);
@@ -71,6 +78,8 @@ public class MainMenu extends AppCompatActivity
         changeSchedule.setVisibility(View.GONE);
         findButton = (Button) findViewById(R.id.findpartner);
         findButton.setEnabled(true);
+        pickPartner = (Button) findViewById(R.id.pickPartner);
+        pickPartner.setVisibility(View.VISIBLE);
         exerciseButton = (Button) findViewById(R.id.exercise);
         exerciseButton.setVisibility(View.GONE);
         test = (TextView) findViewById(R.id.Text);
@@ -124,27 +133,6 @@ public class MainMenu extends AppCompatActivity
                 Log.w(TAG, "Failed to read value.", error.toException());
             }
         });
-        //get
-      /*  mInstance.getReference().child("Users").child(uid)
-                .addValueEventListener(
-                        new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                if(dataSnapshot.exists()){
-                                User user = dataSnapshot.getValue(User.class);
-                                userUsername = user.username;
-                                }
-                                else{
-
-                                }
-                            }
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-                                Log.w(TAG, "Failed to read value.");
-                            }
-                        });*/
-        //Collect logged in user's allDate,allLocation, and allSport
-
 
         mInstance.getReference("Schedules").child(uid).addValueEventListener(new ValueEventListener() {
             @Override
@@ -229,28 +217,33 @@ public class MainMenu extends AppCompatActivity
                                 Log.w(TAG, "Failed to read value.");
                             }
                         });
-// Mengambil semua data di Schedules
+
+// Match making
         mInstance.getReference().child("Schedules")
                 .addValueEventListener(
                         new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
+
+
                                 if (dataSnapshot.child(uid).exists()) { //in case user haven't made a schedule
                                     //Get map of users in datasnapshot
                                     collectDate((Map<String, Object>) dataSnapshot.getValue());
                                     collectLocation((Map<String, Object>) dataSnapshot.getValue());
                                     collectSport((Map<String, Object>) dataSnapshot.getValue());
                                     //COMPARE USER'S SCHEDULE VALUES TO ALL EXISTING SCHEDULE
+
                                     for (i = 0; i < allDate.size(); i++) {
 
                                         //CASE 1 --> flag 0 (baru masuk), belum mendapatkan partner
                                         if (inPartner.equals("0") && !userDate.equals("0") && userDate.equals(allDate.get(i)) && userSport.equals(allSport.get(i)) && userLocation.equals(allLocation.get(i)) &&!userUsername.equals(allUsername.get(i))&("0").equals(allinPartner.get(i))) { //MATCH SAAT SUDAH TANGGALNYA
                                             exerciseButton.setVisibility(View.VISIBLE);
                                             hurray.setVisibility(View.VISIBLE);
-                                            hurray.setText("Hurray! We've found you partner for " + allDate.get(i));
+                                            hurray.setText("Hurray! We've found you partner for "+allSport.get(i) +" on "+ allDate.get(i));
                                             test.setText("Your partner is  " + allUsername.get(i) + "!");
                                             // taruh pada child user
                                             UsersRef.child(uid).child("inPartner").setValue("1");
+                                            UsersRef.child(uid).child("gabungan").setValue("1"+"_"+allSport.get(i)+"_"+userDate+"_"+userLocation);
                                             UsersRef.child(uid).child("partner").child("userP").setValue(allUsername.get(i));
                                             UsersRef.child(uid).child("partner").child("sportP").setValue(allSport.get(i));
                                             UsersRef.child(uid).child("partner").child("locationP").setValue(allLocation.get(i));
@@ -260,6 +253,7 @@ public class MainMenu extends AppCompatActivity
                                             UsersRef.child(uid).child("partner").child("imageP").setValue(allImage.get(i));
                                             //taruh pada child partner
                                             UsersRef.child(alluid.get(i)).child("inPartner").setValue("2");
+                                            UsersRef.child(alluid.get(i)).child("gabungan").setValue("2"+"_"+userSport+"_"+userDate+"_"+userLocation);
                                             UsersRef.child(alluid.get(i)).child("partner").child("userP").setValue(userUsername);
                                             UsersRef.child(alluid.get(i)).child("partner").child("sportP").setValue(userSport);
                                             UsersRef.child(alluid.get(i)).child("partner").child("locationP").setValue(userLocation);
@@ -269,31 +263,38 @@ public class MainMenu extends AppCompatActivity
                                             UsersRef.child(alluid.get(i)).child("partner").child("imageP").setValue(userImage);
                                             i = 0;
                                             findButton.setVisibility(View.GONE);
+                                            pickPartner.setVisibility(View.GONE);
                                             exerciseButton.setVisibility(View.VISIBLE);
+                                            changeSchedule.setVisibility(View.GONE);
                                             break;
                                         }
                                         if (inPartner.equals("1")){
                                             hurray.setVisibility(View.VISIBLE);
-                                            hurray.setText("Hurray! We've found you partner for " + partnerDate);
+                                            hurray.setText("Hurray! We've found you partner for "+allSport.get(i) +" on "+ allDate.get(i));
                                             test.setText("Your partner is  " + partnerUsername + "!");
                                             findButton.setVisibility(View.GONE);
+                                            pickPartner.setVisibility(View.GONE);
                                             exerciseButton.setVisibility(View.VISIBLE);
                                             i=0;
                                             break;
                                         }
                                         if(inPartner.equals("2")){
                                             hurray.setVisibility(View.VISIBLE);
-                                            hurray.setText("Hurray! We've found you partner for " + partnerDate);
+                                            hurray.setText("Hurray! We've found you partner for "+allSport.get(i) +" on "+ allDate.get(i));
                                             test.setText("Your partner is  " + partnerUsername + "!");
                                             findButton.setVisibility(View.GONE);
+                                            pickPartner.setVisibility(View.GONE);
                                             exerciseButton.setVisibility(View.VISIBLE);
+                                            changeSchedule.setVisibility(View.GONE);
 
                                         }
                                         else if (!userDate.equals("0")) {
                                             hurray.setVisibility(View.GONE);
                                             findButton.setVisibility(View.GONE);
+                                            pickPartner.setVisibility(View.GONE);
                                             changeSchedule.setVisibility(View.VISIBLE);
-                                            test.setText("No match found for "+userDate);
+                                            test.setText("No match found for "+userSport+" on "+ userDate);
+                                            UsersRef.child(uid).child("gabungan").setValue("0"+"_"+userSport+"_"+userDate+"_"+userLocation);
                                         }
 
                                     }
@@ -339,6 +340,15 @@ public class MainMenu extends AppCompatActivity
 
         });
 
+       pickPartner.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainMenu.this, MainActivity.class));
+            }
+
+        });
+
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -348,7 +358,7 @@ public class MainMenu extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-    }
+    }// close tagfor OnCretae class
 
     @Override
     public void onBackPressed() {

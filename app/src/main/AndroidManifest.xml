@@ -38,7 +38,10 @@
             android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity android:name=".Exercise" />
         <activity android:name=".DetailsActivity" />
-        <activity android:name=".Rating"></activity>
+        <activity android:name=".Rating">
+        </activity>
+        <activity android:name=".MainActivity"></activity>
+
     </application>
 
 </manifest>

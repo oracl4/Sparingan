@@ -162,6 +162,11 @@ public class CreateSchedule extends Activity implements OnItemSelectedListener{
 
                     ;
                 });
+
+
+               // FirebaseDatabase.getInstance().getReference("Users").child(FirebaseAuth.getInstance().getUid()).child("gabungan").setValue(gabungan);
+
+
             }
 
         });
