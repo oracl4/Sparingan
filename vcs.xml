@@ -6,8 +6,12 @@
           <option name="url" value="https://github.com/oracl4/sparingan" />
           <option name="userName" value="" />
         </UrlAndUserName>
+        <UrlAndUserName>
+          <option name="url" value="https://github.com/oracl4/sparingan.git" />
+          <option name="userName" value="" />
+        </UrlAndUserName>
       </list>
     </option>
-    <option name="cloneParentDir" value="E:\Downloads" />
+    <option name="cloneParentDir" value="E:\" />
   </component>
 </application>
